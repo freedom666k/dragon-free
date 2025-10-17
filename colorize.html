@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تلوين صورة - DRAGON FREE</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/main.js"></script>
+</head>
+<body>
+<header>تلوين صورة - DRAGON FREE</header>
+<div style="text-align:center; margin:10px;">
+    <button onclick="toggleMode()">وضع ليلي/نهاري</button>
+    <a href="../index.html"><button>العودة للرئيسية</button></a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3><i class="fas fa-palette"></i> تلوين الصورة</h3>
+        <input type="file" id="colorImage" accept="image/*">
+        <br>
+        <label>اختر اللون:</label>
+        <input type="color" id="colorPicker" value="#ff0000">
+        <button onclick="colorizeImage()">تلوين</button>
+        <canvas id="canvasColor"></canvas>
+        <button onclick="downloadCanvas('canvasColor')">تحميل الصورة</button>
+    </div>
+</div>
+
+<script>
+function colorizeImage(){
+    const file = document.getElementById('colorImage').files[0];
+    if(!file) return alert("اختر صورة أولاً");
+    const color = document.getElementById('colorPicker').value;
+    const reader = new FileReader();
+    reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+            const canvas = document.getElementById('canvasColor');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img,0,0);
+
+            // نطبق اللون بشكل Overlay نصف شفاف
+            ctx.fillStyle = color + "80"; // 50% شفافية
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+        }
+        img.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+}
+</script>
+
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
