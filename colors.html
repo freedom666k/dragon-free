@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تحديد ألوان - DRAGON FREE</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/main.js"></script>
+</head>
+<body>
+<header>تحديد ألوان - DRAGON FREE</header>
+<div style="text-align:center; margin:10px;">
+    <button onclick="toggleMode()">وضع ليلي/نهاري</button>
+    <a href="../index.html"><button>العودة للرئيسية</button></a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3><i class="fas fa-eyedropper"></i> تحديد ألوان من الصورة</h3>
+        <input type="file" id="colorPickerImage" accept="image/*">
+        <canvas id="canvasColors"></canvas>
+        <p>اللون المحدد: <span id="selectedColor">#ffffff</span></p>
+        <button onclick="copySelectedColor()">نسخ اللون</button>
+    </div>
+</div>
+
+<script>
+let ctxColors, canvasColors;
+document.getElementById('colorPickerImage').addEventListener('change', function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){
+        const img = new Image();
+        img.onload = function(){
+            canvasColors = document.getElementById('canvasColors');
+            ctxColors = canvasColors.getContext('2d');
+            canvasColors.width = img.width;
+            canvasColors.height = img.height;
+            ctxColors.drawImage(img,0,0);
+        }
+        img.src = ev.target.result;
+    }
+    reader.readAsDataURL(file);
+});
+
+document.getElementById('canvasColors').addEventListener('click', function(e){
+    const rect = canvasColors.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const pixel = ctxColors.getImageData(x,y,1,1).data;
+    const hex = "#" + ((1 << 24) + (pixel[0] << 16) + (pixel[1] << 8) + pixel[2]).toString(16).slice(1);
+    document.getElementById('selectedColor').textContent = hex;
+});
+
+function copySelectedColor(){
+    const color = document.getElementById('selectedColor').textContent;
+    navigator.clipboard.writeText(color);
+    alert("تم نسخ اللون: " + color);
+}
+</script>
+
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
