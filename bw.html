@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تحويل صورة الي ابيض واسود - DRAGON FREE</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/main.js"></script>
+</head>
+<body>
+<header>تحويل صورة الي ابيض واسود - DRAGON FREE</header>
+<div style="text-align:center; margin:10px;">
+    <button onclick="toggleMode()">وضع ليلي/نهاري</button>
+    <a href="../index.html"><button>العودة للرئيسية</button></a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3><i class="fas fa-adjust"></i> تحويل الصورة إلى أبيض وأسود</h3>
+        <input type="file" id="bwImage" accept="image/*">
+        <button onclick="convertBW()">تحويل</button>
+        <canvas id="canvasBW"></canvas>
+        <button onclick="downloadCanvas('canvasBW')">تحميل الصورة</button>
+    </div>
+</div>
+
+<script>
+function convertBW(){
+    const file = document.getElementById('bwImage').files[0];
+    if(!file) return alert("اختر صورة أولاً");
+    const reader = new FileReader();
+    reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+            const canvas = document.getElementById('canvasBW');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img,0,0);
+            const imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
+            for(let i=0;i<imgData.data.length;i+=4){
+                const avg = (imgData.data[i]+imgData.data[i+1]+imgData.data[i+2])/3;
+                imgData.data[i] = imgData.data[i+1] = imgData.data[i+2] = avg;
+            }
+            ctx.putImageData(imgData,0,0);
+        }
+        img.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+}
+</script>
+
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
