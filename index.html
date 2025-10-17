@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRAGON FREE</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script src="js/main.js"></script>
+<style>
+/* القائمة المنسدلة */
+.menu {
+  position: absolute;
+  top: 8px;
+  right: 20px;
+}
+
+.menu button {
+  background-color: #d90429;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.menu button:hover {
+  background-color: #ff1e00;
+  transform: scale(1.05);
+}
+
+.menu-content {
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #222;
+  border-radius: 8px;
+  min-width: 160px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+  z-index: 1000;
+}
+
+.menu-content a {
+  color: #fff;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  transition: 0.3s;
+}
+
+.menu-content a:hover {
+  background-color: #d90429;
+}
+
+.show {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes slideDown {
+  from {transform: translateY(-10px); opacity: 0;}
+  to {transform: translateY(0); opacity: 1;}
+}
+
+/* تنسيق العنوان والزر بجانبه */
+header {
+  position: relative;
+  text-align: center;
+  font-size: 24px;
+  margin-top: 15px;
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<header>
+  DRAGON FREE
+  <div class="menu">
+    <button onclick="toggleMenu()">القائمة</button>
+    <div id="menuList" class="menu-content">
+      <a href="about.html">About me</a>
+      <a href="index.html">Main</a>
+      <a href="contact.html">Contact now</a>
+    </div>
+  </div>
+</header>
+
+<div style="text-align:center; margin:10px;">
+    <button onclick="toggleMode()">وضع ليلي/نهاري</button>
+</div>
+
+<div class="container">
+    <!-- تصميمات -->
+    <div class="card"><i class="fas fa-qrcode fa-2x"></i><h3>QR Generator</h3><a href="tools/qr.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-adjust fa-2x"></i><h3>أبيض وأسود</h3><a href="tools/bw.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-palette fa-2x"></i><h3>تلوين صورة</h3><a href="tools/colorize.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-eraser fa-2x"></i><h3>إزالة خلفية</h3><a href="tools/remove-text.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-star fa-2x"></i><h3>تحسين جودة</h3><a href="tools/enhance.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-eyedropper fa-2x"></i><h3>تحديد ألوان</h3><a href="tools/colors.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-eraser fa-2x"></i><h3>زخرفة اسامي</h3><a href="tools/decorate_full.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-eraser fa-2x"></i><h3>تشفير كلام في صورة</h3><a href="tools/re.html">اذهب للأداة</a></div>
+
+    <!-- برمجية -->
+    <div class="card"><i class="fas fa-shield-alt fa-2x"></i><h3>فحص حاله موقع</h3><a href="code/site-check.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-envelope fa-2x"></i><h3>إيميل مؤقت</h3><a href="code/temp-email.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-terminal fa-2x"></i><h3>أكواد أساسية</h3><a href="code/base-code.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-eraser fa-2x"></i><h3>فحص رابط</h3><a href="code/check.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-eraser fa-2x"></i><h3>سرعة انترنت</h3><a href="code/in.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-eraser fa-2x"></i><h3>فحص امان كلمات مرور</h3><a href="code/pass.html">اذهب للأداة</a></div>
+    <div class="card"><i class="fas fa-eraser fa-2x"></i><h3>توليد يوزرات</h3><a href="code/user.html">اذهب للأداة</a></div>
+
+    <!-- زر رشق تيك توك داخل نفس الحاوية -->
+    <div class="card"><i class="fas fa-eraser fa-2x"></i><h3>رشق مشاهدات تيك توك</h3><a href="code/tik.html">اذهب للأداة</a></div>
+</div>
+
+<footer>DRAGON FREE © 2025</footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById("menuList").classList.toggle("show");
+}
+
+window.onclick = function(e) {
+  if (!e.target.matches('.menu button')) {
+    const menu = document.getElementById("menuList");
+    if (menu.classList.contains('show')) menu.classList.remove('show');
+  }
+}
+</script>
+
+</body>
+</html>
