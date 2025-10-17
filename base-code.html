@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أكواد أساسية - DRAGON FREE</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/main.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<header>أكواد أساسية - DRAGON FREE</header>
+<div style="text-align:center; margin:10px;">
+    <button onclick="toggleMode()">وضع ليلي/نهاري</button>
+    <a href="../index.html"><button>العودة للرئيسية</button></a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3><i class="fas fa-terminal"></i> Python</h3>
+        <textarea id="codePython">print("Hello World")</textarea>
+        <button onclick="copyText('codePython')">نسخ الكود</button>
+    </div>
+
+    <div class="card">
+        <h3><i class="fas fa-terminal"></i> HTML</h3>
+        <textarea id="codeHTML">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;/head&gt;
+&lt;body&gt;
+Hello World
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+        <button onclick="copyText('codeHTML')">نسخ الكود</button>
+    </div>
+
+    <div class="card">
+        <h3><i class="fas fa-terminal"></i> Node.js</h3>
+        <textarea id="codeNode">console.log("Hello World");</textarea>
+        <button onclick="copyText('codeNode')">نسخ الكود</button>
+    </div>
+</div>
+
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
