@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>زخرفة الأسماء - متقدمة</title>
+<style>
+:root {
+    --bg-color: #121212;
+    --text-color: #fff;
+    --input-bg: #1e1e1e;
+    --button-bg: #ff4c4c;
+    --button-hover: #e04343;
+}
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+}
+header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+header a, header button {
+    background: var(--button-bg);
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+header a:hover, header button:hover { background: var(--button-hover); }
+h1 { color: #ff4c4c; margin-bottom: 20px; }
+input, select {
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background: var(--input-bg);
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+button#decorateBtn {
+    padding:10px 20px;
+    border:none;
+    border-radius:5px;
+    background: var(--button-bg);
+    color:#fff;
+    cursor:pointer;
+    transition: background 0.3s;
+    margin-bottom: 10px;
+}
+button#decorateBtn:hover { background: var(--button-hover); }
+#decoratedResult {
+    margin-top:10px;
+    padding:15px;
+    border-radius:5px;
+    width:320px;
+    text-align:center;
+    font-weight:bold;
+    word-break:break-word;
+}
+/* وضع النهاري */
+body.light-mode {
+    --bg-color: #f5f5f5;
+    --text-color: #000;
+    --input-bg: #fff;
+    --button-bg: #ff4c4c;
+    --button-hover: #e04343;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <a href="/index.html">العودة إلى الصفحة الرئيسية</a>
+    <button id="toggleMode">وضع نهاري / ليلي</button>
+</header>
+
+<h1>زخرفة الأسماء - متقدمة</h1>
+<input type="text" id="nameInput" placeholder="أدخل اسمك هنا">
+<select id="styleSelect">
+    <option value="fancy">☆★☆ نجوم</option>
+    <option value="underline">⎯ تحت خط</option>
+    <option value="parentheses">❴❵ أقواس</option>
+    <option value="dots">•·• نقاط</option>
+    <option value="wave">~ موجة ~</option>
+    <option value="hearts">♥ اسم ♥</option>
+    <option value="brackets">【اسم】</option>
+    <option value="stars">✦✧ اسم ✦✧</option>
+    <option value="arrows">➤ اسم ➤</option>
+    <option value="doubleline">〘اسم〙</option>
+    <option value="slash">/اسم/</option>
+    <option value="squiggle">∿اسم∿</option>
+    <option value="fancyLetters">حروف عشوائية</option>
+</select>
+<button id="decorateBtn">زخرف الاسم</button>
+<div id="decoratedResult"></div>
+
+<script>
+// وضع ليلي / نهاري
+document.getElementById("toggleMode").addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+});
+
+// زخرفة الاسم التقليدية
+function decorateName(name, style) {
+    switch(style) {
+        case "fancy": return `☆${name}★`;
+        case "underline": return `_${name}_`;
+        case "parentheses": return `❴${name}❵`;
+        case "dots": return `•${name}•`;
+        case "wave": return `~${name}~`;
+        case "hearts": return `♥${name}♥`;
+        case "brackets": return `【${name}】`;
+        case "stars": return `✦✧${name}✦✧`;
+        case "arrows": return `➤${name}➤`;
+        case "doubleline": return `〘${name}〙`;
+        case "slash": return `/${name}/`;
+        case "squiggle": return `∿${name}∿`;
+        default: return name;
+    }
+}
+
+// زخرفة الحروف العشوائية
+const fancyLetters = {
+    'a': ['α','ą','ά'], 'b': ['β','฿'], 'c': ['¢','č','ç'],
+    'd': ['∂','ď'], 'e': ['ε','є','ë'], 'f': ['ƒ','ғ'], 'g': ['g','ġ','ğ'],
+    'h': ['н','ħ'], 'i': ['ι','į','í'], 'j': ['ĵ','ј'], 'k': ['к','қ'],
+    'l': ['ℓ','ł'], 'm': ['м','₥'], 'n': ['η','ñ'], 'o': ['σ','ø','ό'],
+    'p': ['ρ','þ'], 'q': ['q','զ'], 'r': ['я','ř'], 's': ['ѕ','š','$'],
+    't': ['τ','ţ'], 'u': ['υ','ů'], 'v': ['ν','√'], 'w': ['ω','ш'],
+    'x': ['χ','×'], 'y': ['ү','¥'], 'z': ['z','ž','ζ'],
+    'A': ['Α','Λ','Ⱥ'], 'B': ['Β','ß','฿'], 'C': ['C','Ć','Č'], 'D': ['D','Ð','Ď'],
+    'E': ['Ε','Ë','Є'], 'F': ['F','Ғ'], 'G': ['G','Ğ','Ġ'], 'H': ['Η','Ħ'],
+    'I': ['Ι','Í','Į'], 'J': ['J','Ĵ'], 'K': ['K','Қ'], 'L': ['L','Ł'],
+    'M': ['Μ','₥'], 'N': ['Ν','Ń'], 'O': ['Ο','Ø','Õ'], 'P': ['Ρ','Þ'],
+    'Q': ['Q','Ҩ'], 'R': ['R','Ř'], 'S': ['Ѕ','Š','$'], 'T': ['Τ','Ť'],
+    'U': ['U','Ů','ΰ'], 'V': ['V','√'], 'W': ['W','Ш'], 'X': ['Χ','×'],
+    'Y': ['Y','¥'], 'Z': ['Ζ','Ž']
+};
+
+function fancySubstitute(name) {
+    let result = '';
+    for (const char of name) {
+        const substitutes = fancyLetters[char];
+        if(substitutes) {
+            result += substitutes[Math.floor(Math.random() * substitutes.length)];
+        } else {
+            result += char;
+        }
+    }
+    return result;
+}
+
+// زر زخرفة الاسم
+document.getElementById("decorateBtn").addEventListener("click", () => {
+    const name = document.getElementById("nameInput").value.trim();
+    const style = document.getElementById("styleSelect").value;
+    const resultDiv = document.getElementById("decoratedResult");
+    if(!name) {
+        resultDiv.textContent = "الرجاء إدخال الاسم!";
+        resultDiv.style.backgroundColor = "#444";
+        return;
+    }
+    let decorated;
+    if(style === "fancyLetters") {
+        decorated = fancySubstitute(name);
+    } else {
+        decorated = decorateName(name, style);
+    }
+    resultDiv.textContent = decorated;
+    resultDiv.style.backgroundColor = "#0f7b0f"; // أخضر
+});
+</script>
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
