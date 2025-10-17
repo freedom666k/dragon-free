@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تحسين جودة الصورة - DRAGON FREE</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/main.js"></script>
+</head>
+<body>
+<header>تحسين جودة الصورة - DRAGON FREE</header>
+<div style="text-align:center; margin:10px;">
+    <button onclick="toggleMode()">وضع ليلي/نهاري</button>
+    <a href="../index.html"><button>العودة للرئيسية</button></a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3><i class="fas fa-star"></i> تحسين جودة الصورة</h3>
+        <input type="file" id="enhanceImage" accept="image/*">
+        <button onclick="enhanceImage()">تحسين</button>
+        <canvas id="canvasEnhance"></canvas>
+        <button onclick="downloadCanvas('canvasEnhance')">تحميل الصورة</button>
+    </div>
+</div>
+
+<script>
+function enhanceImage(){
+    const file = document.getElementById('enhanceImage').files[0];
+    if(!file) return alert("اختر صورة أولاً");
+    const reader = new FileReader();
+    reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+            const canvas = document.getElementById('canvasEnhance');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.filter = "contrast(1.2) brightness(1.1)"; // زيادة التباين والسطوع
+            ctx.drawImage(img,0,0);
+        }
+        img.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+}
+</script>
+
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
