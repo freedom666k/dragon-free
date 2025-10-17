@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فحص موقع - DRAGON FREE</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/main.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<header>فحص حاله موقع - DRAGON FREE</header>
+<div style="text-align:center; margin:10px;">
+    <button onclick="toggleMode()">وضع ليلي/نهاري</button>
+    <a href="../index.html"><button>العودة للرئيسية</button></a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3><i class="fas fa-shield-alt"></i> تحقق من حالة موقع</h3>
+        <input type="text" id="siteURL" placeholder="أدخل رابط الموقع...">
+        <button onclick="checkSite()">فحص الموقع</button>
+        <p id="siteStatus"></p>
+    </div>
+</div>
+
+<script>
+function checkSite(){
+    const url = document.getElementById('siteURL').value.trim();
+    if(!url) return alert("أدخل رابط الموقع أولاً");
+    fetch(url)
+        .then(response => {
+            document.getElementById('siteStatus').textContent = `حالة الموقع: ${response.status} ${response.statusText}`;
+        })
+        .catch(err => {
+            document.getElementById('siteStatus').textContent = "الموقع غير متاح أو الرابط غير صحيح";
+        });
+}
+</script>
+
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
