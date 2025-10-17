@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إيميل مؤقت - DRAGON FREE</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/main.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<header>إيميل مؤقت - DRAGON FREE</header>
+<div style="text-align:center; margin:10px;">
+    <button onclick="toggleMode()">وضع ليلي/نهاري</button>
+    <a href="../index.html"><button>العودة للرئيسية</button></a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3><i class="fas fa-envelope"></i> إنشاء بريد مؤقت</h3>
+        <input type="text" id="tempEmail" readonly>
+        <button onclick="generateTempEmail()">توليد بريد جديد</button>
+        <button onclick="copyText('tempEmail')">نسخ البريد</button>
+    </div>
+</div>
+
+<script>
+function generateTempEmail(){
+    const domains = ['@tempmail.com','@mailinator.com','@example.com'];
+    const name = Math.random().toString(36).substring(2,10);
+    const email = name + domains[Math.floor(Math.random()*domains.length)];
+    document.getElementById('tempEmail').value = email;
+}
+window.onload = generateTempEmail;
+</script>
+
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
