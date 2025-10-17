@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إزالة خلفية - DRAGON FREE</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/main.js"></script>
+</head>
+<body>
+<header>إزالة خلفية - DRAGON FREE</header>
+<div style="text-align:center; margin:10px;">
+    <button onclick="toggleMode()">وضع ليلي/نهاري</button>
+    <a href="../index.html"><button>العودة للرئيسية</button></a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3><i class="fas fa-eraser"></i> إزالة الخلفية</h3>
+        <input type="file" id="removeTextImage" accept="image/*">
+        <button onclick="removeText()">إزالة</button>
+        <canvas id="canvasRemoveText"></canvas>
+        <button onclick="downloadCanvas('canvasRemoveText')">تحميل الصورة</button>
+    </div>
+</div>
+
+<script>
+function removeText(){
+    const file = document.getElementById('removeTextImage').files[0];
+    if(!file) return alert("اختر صورة أولاً");
+    const reader = new FileReader();
+    reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+            const canvas = document.getElementById('canvasRemoveText');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img,0,0);
+            const imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
+            for(let i=0;i<imgData.data.length;i+=4){
+                // إزالة النصوص البيضاء أو السوداء تقريبا
+                const r = imgData.data[i];
+                const g = imgData.data[i+1];
+                const b = imgData.data[i+2];
+                if((r<30 && g<30 && b<30) || (r>220 && g>220 && b>220)){
+                    imgData.data[i+3] = 0;
+                }
+            }
+            ctx.putImageData(imgData,0,0);
+        }
+        img.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+}
+</script>
+
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
