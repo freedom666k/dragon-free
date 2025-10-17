@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Generator - DRAGON FREE</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../js/main.js"></script>
+<script>
+function generateQR(){
+    const text = document.getElementById('qrText').value.trim();
+    if(!text) return alert("اكتب النص أولاً");
+    const container = document.getElementById('qrcode');
+    container.innerHTML = "";
+    new QRCode(container, { text: text, width: 200, height: 200 });
+}
+
+function copyQR(){
+    const canvas = document.querySelector('#qrcode canvas');
+    if(!canvas) return alert("لا يوجد QR لتنسخه");
+    canvas.toBlob(function(blob){
+        navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+        alert("تم نسخ QR!");
+    });
+}
+
+function downloadQR(){
+    const canvas = document.querySelector('#qrcode canvas');
+    if(!canvas) return alert("لا يوجد QR لتحميله");
+    const link = document.createElement('a');
+    link.download = 'qr.png';
+    link.href = canvas.toDataURL();
+    link.click();
+}
+</script>
+</head>
+<body>
+<header>QR Generator - DRAGON FREE</header>
+<div style="text-align:center; margin:10px;">
+    <button onclick="toggleMode()">وضع ليلي/نهاري</button>
+    <a href="../index.html"><button>العودة للرئيسية</button></a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3><i class="fas fa-qrcode"></i> تحويل نصوص إلى QR</h3>
+        <textarea id="qrText" placeholder="اكتب نص هنا"></textarea>
+        <button onclick="generateQR()">توليد QR</button>
+        <div id="qrcode" style="margin-top:10px;"></div>
+        <button onclick="copyQR()">نسخ QR</button>
+        <button onclick="downloadQR()">تحميل QR</button>
+    </div>
+</div>
+
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
