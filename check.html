@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فحص أمان الرابط</title>
+<style>
+    :root {
+        --bg-color: #121212;
+        --text-color: #fff;
+        --input-bg: #1e1e1e;
+        --button-bg: #ff4c4c;
+        --button-hover: #e04343;
+    }
+
+    body {
+        background: var(--bg-color);
+        color: var(--text-color);
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        min-height: 100vh;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    header a, header button {
+        background: var(--button-bg);
+        color: #fff;
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    header a:hover, header button:hover {
+        background: var(--button-hover);
+    }
+
+    h1 { color: #ff4c4c; margin-bottom: 20px; }
+
+    input {
+        padding: 10px;
+        width: 300px;
+        border-radius: 5px;
+        border: 1px solid #444;
+        background: var(--input-bg);
+        color: var(--text-color);
+        margin-bottom: 10px;
+    }
+
+    button#checkBtn {
+        padding:10px 20px;
+        border:none;
+        border-radius:5px;
+        background: var(--button-bg);
+        color:#fff;
+        cursor:pointer;
+        transition: background 0.3s;
+    }
+
+    button#checkBtn:hover {
+        background: var(--button-hover);
+    }
+
+    #result {
+        margin-top:20px;
+        padding:15px;
+        border-radius:5px;
+        width:320px;
+        text-align:center;
+        font-weight:bold;
+        word-break:break-word;
+    }
+
+    /* وضع النهاري */
+    body.light-mode {
+        --bg-color: #f5f5f5;
+        --text-color: #000;
+        --input-bg: #fff;
+        --button-bg: #ff4c4c;
+        --button-hover: #e04343;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <a href="/index.html">العودة إلى الصفحة الرئيسية</a>
+    <button id="toggleMode">وضع نهاري / ليلي</button>
+</header>
+
+<h1>فحص أمان الرابط</h1>
+<input type="text" id="urlInput" placeholder="أدخل الرابط هنا">
+<button id="checkBtn">فحص الرابط</button>
+
+<div id="result"></div>
+
+<script>
+// دالة فحص الرابط
+function checkLinkSafety(url) {
+    if (!url || typeof url !== 'string') return "الرابط غير صالح";
+
+    const forbidden = ["hack", "phish", "malware"];
+    const lowerUrl = url.toLowerCase();
+
+    for (const word of forbidden) {
+        if (lowerUrl.includes(word)) return "مشبوه";
+    }
+
+    if (!lowerUrl.startsWith("https://")) return "مشبوه";
+
+    return "آمن جداً";
+}
+
+// ربط الفحص مع الزر
+document.getElementById("checkBtn").addEventListener("click", () => {
+    const url = document.getElementById("urlInput").value.trim();
+    const resultDiv = document.getElementById("result");
+    const status = checkLinkSafety(url);
+
+    if(status === "آمن جداً") {
+        resultDiv.textContent = "✅ الرابط آمن جداً";
+        resultDiv.style.backgroundColor = "#0f7b0f"; // أخضر
+    } else if(status === "مشبوه") {
+        resultDiv.textContent = "⚠️ الرابط مشبوه";
+        resultDiv.style.backgroundColor = "#7b0f0f"; // أحمر
+    } else {
+        resultDiv.textContent = status;
+        resultDiv.style.backgroundColor = "#444"; // رمادي
+    }
+});
+
+// زر تبديل الوضع الليلي / النهاري
+document.getElementById("toggleMode").addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+});
+</script>
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
