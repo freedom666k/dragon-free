@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أداة كلمات المرور الاحترافية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #121212;
+    --bg-section: #1e1e1e;
+    --text-color: #f0f0f0;
+    --btn-red: #c0392b;
+    --btn-hover: #e74c3c;
+    --input-bg: #2c2c2c;
+    --shadow: rgba(0,0,0,0.5);
+  }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  header {
+    text-align: center;
+    padding: 20px;
+  }
+
+  h1 {
+    margin-bottom: 10px;
+  }
+
+  button {
+    background: linear-gradient(45deg, var(--btn-red), var(--btn-hover));
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 6px var(--shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px var(--shadow);
+  }
+
+  section {
+    background: var(--bg-section);
+    padding: 20px;
+    margin: 15px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 8px 16px var(--shadow);
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: none;
+    background: var(--input-bg);
+    color: var(--text-color);
+  }
+
+  #password-list {
+    margin-top: 15px;
+  }
+
+  .password-item {
+    background: rgba(192,57,43,0.3);
+    padding: 8px 12px;
+    margin: 6px 0;
+    border-radius: 8px;
+    word-break: break-word;
+  }
+
+  p {
+    margin-top: 8px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🔐 أداة كلمات المرور الاحترافية</h1>
+  <button id="homeBtn">🏠 العودة للرئيسية</button>
+  <button id="themeBtn">🌙 وضع نهاري / ليلي</button>
+</header>
+
+<section>
+  <h2>🧩 مولد كلمة مرور</h2>
+  <input type="number" id="length" placeholder="طول كلمة المرور (4-32)" min="4" max="32" />
+  <button id="generateBtn">⚡ توليد كلمة مرور</button>
+
+  <h2>🔍 فحص أمان كلمة المرور</h2>
+  <input type="text" id="passwordInput" placeholder="ادخل كلمة المرور" />
+  <button id="checkBtn">✅ فحص الأمان</button>
+  <p id="checkResult"></p>
+
+  <h2>💾 كلمات المرور المحفوظة</h2>
+  <div id="password-list"></div>
+</section>
+
+<script>
+  const homeBtn = document.getElementById('homeBtn');
+  const themeBtn = document.getElementById('themeBtn');
+  const generateBtn = document.getElementById('generateBtn');
+  const checkBtn = document.getElementById('checkBtn');
+  const passwordList = document.getElementById('password-list');
+  const lengthInput = document.getElementById('length');
+  const passwordInput = document.getElementById('passwordInput');
+  const checkResult = document.getElementById('checkResult');
+
+  let savedPasswords = JSON.parse(localStorage.getItem('passwords') || '[]');
+  renderPasswords();
+
+  // زر العودة للرئيسية → يفتح index.html
+  homeBtn.addEventListener('click', () => {
+    window.location.href = '/index.html';
+  });
+
+  // زر الوضع الليلي / النهاري
+  let isDark = true; // الوضع الحالي داكن
+  themeBtn.addEventListener('click', () => {
+    if(isDark) {
+      document.body.style.backgroundColor = '#ffffff';
+      document.body.style.color = '#000000';
+      isDark = false;
+    } else {
+      document.body.style.backgroundColor = '#121212';
+      document.body.style.color = '#f0f0f0';
+      isDark = true;
+    }
+  });
+
+  // توليد كلمة مرور
+  function generatePassword(length) {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+[]{}<>?,.';
+    let password = '';
+    for(let i=0; i<length; i++){
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  }
+
+  generateBtn.addEventListener('click', () => {
+    const len = parseInt(lengthInput.value);
+    if(!len || len < 4) {
+      alert('ادخل طول صالح (4-32)');
+      return;
+    }
+    const pwd = generatePassword(len);
+    savedPasswords.push(pwd);
+    localStorage.setItem('passwords', JSON.stringify(savedPasswords));
+    renderPasswords();
+  });
+
+  function renderPasswords() {
+    passwordList.innerHTML = '';
+    savedPasswords.forEach(pwd => {
+      const div = document.createElement('div');
+      div.className = 'password-item';
+      div.textContent = pwd;
+      passwordList.appendChild(div);
+    });
+  }
+
+  // فحص أمان كلمة المرور
+  function checkPasswordSecurity(pwd) {
+    let score = 0;
+    if(pwd.length >= 8) score++;
+    if(/[A-Z]/.test(pwd)) score++;
+    if(/[a-z]/.test(pwd)) score++;
+    if(/[0-9]/.test(pwd)) score++;
+    if(/[^A-Za-z0-9]/.test(pwd)) score++;
+
+    if(score <= 2) return 'ضعيفة ❌';
+    if(score === 3) return 'متوسطة ⚠️';
+    if(score >= 4) return 'قوية ✅';
+  }
+
+  checkBtn.addEventListener('click', () => {
+    const pwd = passwordInput.value;
+    if(!pwd) {
+      alert('ادخل كلمة المرور لفحصها');
+      return;
+    }
+    checkResult.textContent = `الأمان: ${checkPasswordSecurity(pwd)}`;
+  });
+</script>
+</body>
+</html>
