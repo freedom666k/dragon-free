@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Me - DRAGON FREE</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+body {
+  background-color: #0e0e0e;
+  color: #fff;
+  font-family: "Cairo", sans-serif;
+  text-align: center;
+  padding: 40px;
+  transition: 0.4s;
+}
+
+.profile-img {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 3px solid #d90429;
+  box-shadow: 0 0 15px rgba(217,4,41,0.7);
+  object-fit: cover;
+  margin-bottom: 20px;
+  animation: fadeInDown 1s ease;
+}
+
+h1 {
+  color: #d90429;
+  margin-bottom: 20px;
+  font-size: 32px;
+  animation: fadeInDown 0.8s ease;
+}
+
+p {
+  font-size: 18px;
+  line-height: 1.7;
+  max-width: 700px;
+  margin: 0 auto 20px;
+  animation: fadeIn 1s ease;
+}
+
+.accounts {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.account-card {
+  background-color: #1a1a1a;
+  padding: 15px 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  transition: 0.3s;
+  width: 250px;
+}
+
+.account-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(217,4,41,0.7);
+}
+
+.account-card a {
+  text-decoration: none;
+  color: #fff;
+  display: block;
+  font-size: 16px;
+  word-wrap: break-word;
+}
+
+.account-card i {
+  color: #d90429;
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+a.back {
+  display: inline-block;
+  margin-top: 30px;
+  background: #d90429;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+a.back:hover {
+  background: #ff1e00;
+  transform: scale(1.05);
+}
+
+button.mode-btn {
+  background-color: #d90429;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+button.mode-btn:hover {
+  background-color: #ff1e00;
+  transform: scale(1.05);
+}
+
+.light-mode {
+  background-color: #f8f8f8;
+  color: #000;
+}
+
+.light-mode .account-card {
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.light-mode .account-card a {
+  color: #000;
+}
+
+.light-mode a.back {
+  background: #333;
+  color: #fff;
+}
+
+@keyframes fadeInDown {
+  from {opacity: 0; transform: translateY(-20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+</style>
+</head>
+<body>
+
+<button class="mode-btn" onclick="toggleMode()">وضع ليلي/نهاري</button>
+
+<img src="https://cdn.discordapp.com/attachments/1425831074545664000/1428379622168465428/892ecb329e0ece38e250f6cd140b11db.jpg?ex=68f249af&is=68f0f82f&hm=b9fa8ef28ec6024a8dba6d7ca825ff7cd13e89b02a89f2b3bf1c739a90a68ed9&?size=1024" alt="Discord Profile" class="profile-img">
+
+<h1>من أنا؟</h1>
+
+<p>أنا مبرمج ومصمم مواقع أعمل على تطوير أدوات مفيدة ومجانية ضمن مشروع 
+<strong>DRAGON FREE</strong>.  
+هدفي أن أقدّم أدوات برمجية وتصميمية تساعد المستخدمين والمطورين على إنجاز مهامهم بسهولة وسرعة.</p>
+
+<div class="accounts">
+  <div class="account-card">
+    <i class="fas fa-globe"></i>
+    <a href="https://0d8b0ce1-ebbf-445e-8da4-979bf7e5863b-00-2l3nmnwzmir03.picard.replit.dev/index.html" target="_blank">location </a>
+  </div>
+
+  <div class="account-card">
+    <i class="fab fa-discord"></i>
+    <a href="https://discord.com/users/1303062740092588132" target="_blank">Discord account </a>
+  </div>
+
+  <div class="account-card">
+    <i class="fas fa-envelope"></i>
+    <a href="mailto: ahmedhrbz52@gmail.com">Gmail Developer</a>
+  </div>
+</div>
+
+<a href="../index.html" class="back">العودة إلى الصفحة الرئيسية</a>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+function toggleMode() {
+  document.body.classList.toggle("light-mode");
+}
+</script>
+
+</body>
+</html>
