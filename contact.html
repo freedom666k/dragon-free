@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تواصل معنا - DRAGON FREE</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/main.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<header>تواصل معنا - DRAGON FREE</header>
+<div style="text-align:center; margin:10px;">
+    <button onclick="toggleMode()">وضع ليلي/نهاري</button>
+    <a href="index.html"><button>العودة للرئيسية</button></a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3><i class="fas fa-envelope"></i> أرسل لنا رسالة</h3>
+        <form onsubmit="sendMessage(event)">
+            <input type="text" id="name" placeholder="الاسم" required>
+            <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+            <textarea id="message" placeholder="اكتب رسالتك هنا..." required></textarea>
+            <button type="submit">إرسال</button>
+        </form>
+        <p id="status"></p>
+    </div>
+</div>
+
+<script>
+function sendMessage(e){
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+
+    // استخدام mailto: مؤقت بدون باك إند
+    window.location.href = `mailto:ahmedhrbz52@gmail.com?subject=رسالة من ${name}&body=${encodeURIComponent(message + "\n\nالبريد: " + email)}`;
+    document.getElementById('status').textContent = "تم فتح البريد لإرسال الرسالة. تأكد من إكمال الإرسال في برنامج البريد الخاص بك.";
+}
+</script>
+
+<footer>DRAGON FREE © 2025</footer>
+</body>
+</html>
