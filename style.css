@@ -48,4 +48,20 @@ input, textarea {
     border: none;
 }
 canvas {
- 
+    margin-top: 10px;
+    max-width: 100%;
+    border-radius: 10px;
+}
+/* وضع نهاري */
+body.light-mode {
+    background: #f4f4f4;
+    color: #222;
+}
+body.light-mode .card {
+    background: #fff;
+    color: #222;
+}
+body.light-mode header, body.light-mode footer {
+    background: #eee;
+    color: #ff4c4c;
+}
