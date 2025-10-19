@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رشق مشاهدات تيك توك</title>
+<link rel="stylesheet" href="https://kit.fontawesome.com/a076d05399.js">
+<style>
+:root {
+  --bg-color: #0f1724;
+  --text-color: #e6eef8;
+  --btn-color: #e50914;
+  --btn-hover: #ff1e00;
+  --card-bg: #1e293b;
+}
+
+body {
+  margin:0;
+  padding:0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* البطاقة */
+.card {
+  background: var(--card-bg);
+  padding: 30px 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+  width: 360px;
+  text-align: center;
+  animation: fadeIn 0.5s ease;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.8);
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform: translateY(-20px);}
+  to {opacity:1; transform: translateY(0);}
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 20px;
+  font-size: 15px;
+  background: #0b1220;
+  color: #e6eef8;
+  transition: box-shadow 0.3s, transform 0.2s;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  box-shadow: 0 0 12px #d90429;
+  transform: scale(1.02);
+}
+
+input::placeholder { color: #888; }
+
+button {
+  background: var(--btn-color);
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  margin: 10px auto;
+  display: block;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s ease-in-out, box-shadow 0.3s;
+}
+
+button:hover {
+  background: var(--btn-hover);
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(255,0,0,0.6);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#themeBtn {
+  background: #64748b;
+}
+
+#status {
+  margin-top: 15px;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 8px;
+  display: none;
+}
+
+#status.success {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+  display: block;
+}
+
+#status.error {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  display: block;
+}
+
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>رشق مشاهدات تيك توك</h2>
+  <input type="text" id="discord" placeholder="معرف الديسكورد" pattern="[0-9]{17,19}" required>
+  <input type="text" id="videoLink" placeholder="ضع رابط الفيديو هنا" required>
+  <button id="rashqBtn">إرسال الطلب</button>
+  <button id="homeBtn">العودة للصفحة الرئيسية</button>
+  <button id="themeBtn">وضع ليلي / نهاري</button>
+  <p id="status"></p>
+</div>
+
+<script>
+const rashqBtn = document.getElementById('rashqBtn');
+const videoLink = document.getElementById('videoLink');
+const discordInput = document.getElementById('discord');
+const homeBtn = document.getElementById('homeBtn');
+const themeBtn = document.getElementById('themeBtn');
+const status = document.getElementById('status');
+
+const webhookURL = 'https://discord.com/api/webhooks/1429173843494178856/CU1t2MZS0QGyZQT7FG-DGgjrOvRKijsCustfv-i0aEghedOZ44U_DTK-owxj3SkhQVUw';
+
+// زر الرشق
+rashqBtn.addEventListener('click', async () => {
+  const link = videoLink.value.trim();
+  const discord = discordInput.value.trim();
+
+  if(!discord){
+    alert('ضع معرف الديسكورد أولاً!');
+    return;
+  }
+
+  if(!link){
+    alert('ضع رابط الفيديو أولاً!');
+    return;
+  }
+
+  // تعطيل الزر أثناء الإرسال
+  rashqBtn.disabled = true;
+  rashqBtn.textContent = 'جاري الإرسال...';
+  status.style.display = 'none';
+
+  const content = `العضو: <@${discord}>`;
+
+  const payload = {
+    content: content,
+    embeds: [{
+      title: ' طلب رشق مشاهدات تيك توك',
+      color: 16711680, // اللون الأحمر
+      fields: [
+        {
+          name: ' معرف الديسكورد',
+          value: discord,
+          inline: false
+        },
+        {
+          name: ' رابط الفيديو',
+          value: link,
+          inline: false
+        }
+      ],
+      timestamp: new Date().toISOString(),
+      footer: {
+        text: 'DRAGON FREE TikTok Views'
+      }
+    }]
+  };
+
+  try {
+    // إرسال الرسالة الأولى (الـ Embed)
+    const response1 = await fetch(webhookURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response1.ok) {
+      throw new Error('فشل الإرسال');
+    }
+
+    // الانتظار قليلاً قبل إرسال الرسالة الثانية
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // إرسال الرسالة الثانية (منشن الرتبة)
+    const response2 = await fetch(webhookURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        content: '<@&1378647724039344149>'
+      })
+    });
+
+    if (response2.ok) {
+      status.textContent = '✅ تم إرسال طلبك بنجاح! سيتم الرد عليك قريباً.';
+      status.className = 'success';
+      // مسح الحقول
+      discordInput.value = '';
+      videoLink.value = '';
+    } else {
+      throw new Error('فشل الإرسال');
+    }
+  } catch (error) {
+    status.textContent = '❌ حدث خطأ أثناء الإرسال. حاول مرة أخرى.';
+    status.className = 'error';
+  } finally {
+    rashqBtn.disabled = false;
+    rashqBtn.textContent = 'إرسال الطلب';
+  }
+});
+
+// زر العودة
+homeBtn.addEventListener('click', () => {
+  window.location.href = "index.html";
+});
+
+// زر الوضع الليلي / النهاري
+themeBtn.addEventListener('click', () => {
+  document.body.classList.toggle('light');
+  if(document.body.classList.contains('light')){
+    document.body.style.background = '#f8fafc';
+    document.body.style.color = '#0f1724';
+  } else {
+    document.body.style.background = '#0f1724';
+    document.body.style.color = '#e6eef8';
+  }
+});
+</script>
+
+</body>
+</html>
