@@ -1,179 +1,146 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>مولد يوزرات ديسكورد</title>
-<style>
-:root {
-  --bg: #0b0d10;
-  --card: #151a20;
-  --text: #e8eef3;
-  --muted: #a0b0c0;
-  --red: #d32f2f;
-  --accent: #ff5c5c;
-}
-body.light {
-  --bg: #fafafa;
-  --card: #fff;
-  --text: #1a1a1a;
-  --muted: #5f6b75;
-  --red: #c62828;
-  --accent: #e53935;
-}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);transition:.3s background,.3s color}
-.container{max-width:980px;margin:28px auto;padding:20px}
-h1{margin:0 0 10px;font-size:22px;text-align:center}
-.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;justify-content:center}
-.btn{background:var(--red);color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700;transition:.2s}
-.btn:hover{opacity:.85}
-.btn.secondary{background:transparent;border:1px solid var(--red);color:var(--text)}
-.card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-#usernames{width:100%;height:220px;background:#091017;color:#aef0c2;padding:12px;border-radius:8px;overflow:auto;font-family:monospace;white-space:pre}
-.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;justify-content:center}
-label.small{font-size:13px;color:var(--muted);margin-right:6px}
-select,input[type=number],input[type=text]{background:#111a22;border:1px solid rgba(255,255,255,.08);color:var(--text);padding:8px;border-radius:8px}
-.small{font-size:13px;color:var(--muted);text-align:center}
-.row{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:8px}
-.result-ok{color:#9ff7a6}
-.result-bad{color:#ff9aa2}
-footer{text-align:center;margin-top:14px;color:var(--muted);font-size:13px}
-.toggle-theme{position:fixed;top:15px;right:15px;background:var(--card);border:1px solid var(--red);border-radius:8px;padding:6px 10px;cursor:pointer;color:var(--text)}
-@media(max-width:600px){
-  .controls,.toolbar,.row{flex-direction:column}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مولد يوزرات ديسكورد</title>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+      transition: 0.3s;
+    }
+    .container {
+      background-color: #1a1a1a;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #ff0000;
+      max-width: 550px;
+      margin: auto;
+    }
+    select, button, input {
+      margin: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 80%;
+    }
+    button {
+      background-color: #ff0000;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #cc0000;
+    }
+    #users {
+      margin-top: 20px;
+      background-color: #111;
+      padding: 10px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      direction: ltr;
+      text-align: left;
+    }
+    .toggle {
+      background-color: #555;
+    }
+  </style>
 </head>
 <body>
-  <button class="toggle-theme" onclick="toggleTheme()">☀️ / 🌙</button>
   <div class="container">
-    <h1>مولد يوزرات ديسكورد 🔥</h1>
-    <div class="toolbar">
-      <button class="btn" onclick="goHome()">🏠 عودة للصفحة الرئيسية</button>
-    </div>
+    <h2>🎯 مولد يوزرات ديسكورد</h2>
+    
+    <label>اختر نوع اليوزر:</label><br>
+    <select id="type">
+      <option value="2">ثنائي</option>
+      <option value="2s">شبه ثنائي</option>
+      <option value="3">ثلاثي</option>
+      <option value="3s">شبه ثلاثي</option>
+      <option value="4">رباعي</option>
+      <option value="4s">شبه رباعي</option>
+      <option value="5">خماسي</option>
+    </select><br>
 
-    <div class="card">
-      <div class="controls">
-        <label class="small">نوع اليوزر:</label>
-        <select id="pattern">
-          <option value="tri">ثلاثي (3)</option>
-          <option value="semi-tri">شبه ثلاثي (3-4)</option>
-          <option value="quad">رباعي (4)</option>
-          <option value="semi-quad">شبه رباعي (4-5)</option>
-          <option value="semi-di">شبه ثنائي (2-3)</option>
-          <option value="di">ثنائي (2)</option>
-        </select>
+    <button onclick="generate()">🎲 توليد</button>
+    <button onclick="copy()">📋 نسخ</button>
+    <button onclick="toggleMode()" class="toggle">🌙 وضع ليلي/نهاري</button>
+    <button onclick="window.location.href='index.html'">🏠 عودة</button>
 
-        <label class="small">عدد:</label>
-        <input id="count" type="number" min="1" max="1000" value="20"/>
+    <hr>
+    <h3>📩 إرسال اليوزرات في الخاص</h3>
+    <input type="text" id="userID" placeholder="اكتب ID المستخدم">
+    <button onclick="sendToDM()">🚀 إرسال في الخاص</button>
 
-        <label class="small">رمز بين الحروف:</label>
-        <select id="separator">
-          <option value="none">بدون</option>
-          <option value="_">_</option>
-          <option value=".">.</option>
-        </select>
-
-        <label class="small">مع ديسكرم؟</label>
-        <select id="withDisc">
-          <option value="yes">نعم</option>
-          <option value="no">لا</option>
-        </select>
-
-        <button class="btn" onclick="generate()">توليد</button>
-        <button class="btn secondary" onclick="copyAll()">نسخ</button>
-      </div>
-
-      <div id="usernames" spellcheck="false" contenteditable="false"></div>
-
-      <div class="row">
-        <button class="btn" onclick="check()">فحص فعلي (يحتاج بوت)</button>
-        <button class="btn" onclick="clearAll()">مسح</button>
-        <input id="targetID" type="text" placeholder="Discord ID" style="min-width:220px"/>
-        <button class="btn" onclick="sendDM()">إرسال للخاص</button>
-      </div>
-      <p class="small">⚠️ الفحص والإرسال يحتاج سيرفر فيه بوت مفعل بـ INTENT المناسب.</p>
-    </div>
-    <div id="results"></div>
-    <footer>واجهة توليد وفحص يوزرات Discord — تصميم داكن متبدل 🌙</footer>
+    <div id="users"></div>
   </div>
 
-<script>
-function toggleTheme(){
-  document.body.classList.toggle('light');
-}
-function goHome(){
-  window.location.href = "index.html"; // عدّل حسب مسار الصفحة الرئيسية
-}
-function pickLength(p){
-  switch(p){
-    case 'di':return rand(2,2);
-    case 'semi-di':return rand(2,3);
-    case 'tri':return rand(3,3);
-    case 'semi-tri':return rand(3,4);
-    case 'quad':return rand(4,4);
-    case 'semi-quad':return rand(4,5);
-    default:return 3;
-  }
-}
-function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
-function randStr(len, sep){
-  const chars="abcdefghijklmnopqrstuvwxyz0123456789";
-  let s="";
-  for(let i=0;i<len;i++){
-    s+=chars.charAt(Math.floor(Math.random()*chars.length));
-    if(i<len-1 && sep!=="none" && Math.random()<0.3) s+=sep;
-  }
-  return s;
-}
-function randDisc(){return String(Math.floor(1000+Math.random()*9000));}
-function generate(){
-  const pat=document.getElementById('pattern').value;
-  const sep=document.getElementById('separator').value;
-  const count=parseInt(document.getElementById('count').value||20);
-  const disc=document.getElementById('withDisc').value==="yes";
-  const out=[];
-  for(let i=0;i<count;i++){
-    const len=pickLength(pat);
-    const name=randStr(len,sep);
-    out.push(disc?`${name}#${randDisc()}`:name);
-  }
-  document.getElementById('usernames').innerText=out.join("\n");
-  document.getElementById('results').innerHTML="";
-}
-function copyAll(){
-  const t=document.getElementById('usernames').innerText;
-  if(!t.trim()){alert('لا يوجد شيء لنسخه');return;}
-  navigator.clipboard.writeText(t);
-  alert('تم النسخ ✅');
-}
-function clearAll(){
-  document.getElementById('usernames').innerText="";
-  document.getElementById('results').innerHTML="";
-}
-async function check(){
-  const arr=document.getElementById('usernames').innerText.trim().split("\n").filter(Boolean);
-  if(!arr.length){alert('ما في يوزرات');return;}
-  document.getElementById('results').innerHTML='<div class="card small">جاري الفحص...</div>';
-  try{
-    const r=await fetch('/api/check-usernames',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usernames:arr})});
-    const d=await r.json();
-    document.getElementById('results').innerHTML=d.results.map(x=>x.ok?
-      `<div class='card result-ok'>✅ ${x.input}</div>`:
-      `<div class='card result-bad'>❌ ${x.input}</div>`).join('');
-  }catch(e){
-    document.getElementById('results').innerHTML='<div class="card result-bad">خطأ في الاتصال بالسيرفر.</div>';
-  }
-}
-async function sendDM(){
-  const id=document.getElementById('targetID').value.trim();
-  const arr=document.getElementById('usernames').innerText.trim().split("\n").filter(Boolean);
-  if(!id||!arr.length){alert('أدخل ID واليوزرات');return;}
-  const r=await fetch('/api/send-dm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userID:id,usernames:arr})});
-  const d=await r.json();
-  alert(d.ok?'تم الإرسال ✅':'فشل الإرسال ❌');
-}
-</script>
+  <script>
+    const letters = "abcdefghijklmnopqrstuvwxyz";
+    const numbers = "0123456789";
+    const chars = letters + numbers;
+
+    function randomUsername(length, semi=false) {
+      let result = "";
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      if (semi) result = result + "_" + chars.charAt(Math.floor(Math.random() * chars.length));
+      return result;
+    }
+
+    function generate() {
+      const type = document.getElementById("type").value;
+      const list = [];
+      for (let i = 0; i < 20; i++) {
+        if (type === "2") list.push(randomUsername(2));
+        if (type === "2s") list.push(randomUsername(2, true));
+        if (type === "3") list.push(randomUsername(3));
+        if (type === "3s") list.push(randomUsername(3, true));
+        if (type === "4") list.push(randomUsername(4));
+        if (type === "4s") list.push(randomUsername(4, true));
+        if (type === "5") list.push(randomUsername(5));
+      }
+      document.getElementById("users").innerText = list.join("\n");
+    }
+
+    function copy() {
+      const text = document.getElementById("users").innerText;
+      if (!text) return alert("ما في يوزرات للنسخ");
+      navigator.clipboard.writeText(text);
+      alert("تم النسخ ✅");
+    }
+
+    function toggleMode() {
+      const body = document.body;
+      if (body.style.backgroundColor === "white") {
+        body.style.backgroundColor = "#0d0d0d";
+        body.style.color = "white";
+      } else {
+        body.style.backgroundColor = "white";
+        body.style.color = "black";
+      }
+    }
+
+    async function sendToDM() {
+      const id = document.getElementById("userID").value;
+      const users = document.getElementById("users").innerText;
+      if (!id) return alert("اكتب ID المستخدم أولاً");
+      if (!users) return alert("ولّد يوزرات أولاً");
+      
+      const response = await fetch("/send_dm", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ id, users })
+      });
+
+      const data = await response.json();
+      alert(data.message);
+    }
+  </script>
 </body>
 </html>
