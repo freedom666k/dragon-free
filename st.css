@@ -1,0 +1,46 @@
+body {
+  font-family: "Cairo", sans-serif;
+  direction: rtl;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  transition: background 0.3s, color 0.3s;
+}
+
+.container {
+  text-align: center;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(255, 255, 0, 0.3);
+}
+
+button {
+  margin: 5px;
+  padding: 10px 15px;
+  border: none;
+  background: gold;
+  color: black;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+input {
+  margin: 5px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid gold;
+  text-align: center;
+}
+
+.dark {
+  background-color: #111;
+  color: #ffea00;
+}
+
+.light {
+  background-color: #f8f8f8;
+  color: #222;
+}
