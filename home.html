@@ -4,37 +4,248 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DRAGON COIN</title>
-<link rel="stylesheet" href="st.css">
-<script src="sc.js" defer></script>
+<style>
+  body {
+    font-family: 'Cairo', sans-serif;
+    background-color: #0d1117;
+    color: #c9d1d9;
+    text-align: center;
+    transition: background 0.3s, color 0.3s;
+  }
+  header {
+    background: #161b22;
+    padding: 15px;
+    font-size: 22px;
+    color: #58a6ff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  }
+  main {
+    margin-top: 40px;
+  }
+  input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    margin: 5px;
+    text-align: center;
+  }
+  button {
+    background: #238636;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    margin: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  button:hover {
+    background: #2ea043;
+  }
+  .dark {
+    background-color: #f0f6fc;
+    color: #0d1117;
+  }
+  .btns {
+    margin-top: 30px;
+  }
+</style>
 </head>
-<body class="dark">
-<div class="container">
-  <h1>🐉 مرحبًا بك في DRAGON COIN</h1>
+<body>
 
-  <div id="loginSection">
-    <h3>تسجيل الدخول / إنشاء محفظة</h3>
-    <input type="text" id="username" placeholder="اسم المستخدم">
-    <button onclick="login()">تسجيل</button>
+<header id="title">🐉 DRAGON COIN</header>
+
+<main>
+  <div id="login">
+    <h2 id="loginTitle">تسجيل الدخول</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم"><br>
+    <input type="password" id="password" placeholder="كلمة السر"><br>
+    <button id="loginBtn" onclick="login()">دخول</button>
+    <button id="registerBtn" onclick="register()">تسجيل جديد</button>
   </div>
 
-  <div id="walletSection" style="display:none;">
-    <h3>محفظتك:</h3>
-    <p>الاسم: <span id="userDisplay"></span></p>
-    <p>الرصيد: <span id="balanceDisplay"></span> 💰</p>
+  <div id="main" style="display:none;">
+    <h2 id="welcome">مرحباً، <span id="userDisplay"></span></h2>
+    <p id="balanceText">رصيدك الحالي: <span id="balance">0</span> 🪙 DRG</p>
 
-    <button onclick="dailyGift()">🎁 هدية يومية</button>
+    <div class="btns">
+      <input type="text" id="toUser" placeholder="اسم المستلم">
+      <input type="number" id="amount" placeholder="المبلغ">
+      <button id="transferBtn" onclick="transfer()">تحويل</button><br>
 
-    <h3>تحويل DRAGON</h3>
-    <input type="text" id="targetUser" placeholder="إلى من؟">
-    <input type="number" id="amount" placeholder="المبلغ">
-    <button onclick="transfer()">تحويل</button>
+      <button id="giftBtn" onclick="dailyGift()">🎁 الهدية اليومية</button>
+    </div>
 
-    <p id="message"></p>
-
-    <button onclick="logout()">تسجيل خروج</button>
-    <button onclick="toggleMode()">☀️ / 🌙</button>
-    <button onclick="goHome()">عودة للموقع الرئيسي</button>
+    <div class="btns">
+      <button id="darkBtn" onclick="toggleDarkMode()">🌓 وضع داكن</button>
+      <button onclick="toggleLang()">🌐 <span id="langBtn">ع</span></button>
+      <button id="homeBtn" onclick="location.href='index.html'">🏠 عودة للموقع الرئيسي</button>
+    </div>
   </div>
-</div>
+</main>
+
+<script>
+let data = JSON.parse(localStorage.getItem('dragon_users') || '{}');
+let currentUser = null;
+let dark = false;
+let lang = 'ar';
+
+// الترجمة الكاملة
+const t = {
+  ar: {
+    title: "🐉 DRAGON COIN",
+    loginTitle: "تسجيل الدخول",
+    username: "اسم المستخدم",
+    password: "كلمة السر",
+    loginBtn: "دخول",
+    registerBtn: "تسجيل جديد",
+    welcome: "مرحباً، ",
+    balanceText: "رصيدك الحالي:",
+    toUser: "اسم المستلم",
+    amount: "المبلغ",
+    transferBtn: "تحويل",
+    giftBtn: "🎁 الهدية اليومية",
+    darkBtn: "🌓 وضع داكن",
+    homeBtn: "🏠 عودة للموقع الرئيسي",
+    errors: {
+      userNotFound: "المستخدم غير موجود.",
+      wrongPass: "كلمة السر خاطئة.",
+      empty: "أدخل الاسم وكلمة السر.",
+      userExists: "الاسم مستخدم بالفعل.",
+      wrongData: "بيانات غير صحيحة.",
+      toMissing: "المستلم غير موجود.",
+      notEnough: "رصيدك غير كافٍ.",
+      gifted: "لقد أخذت الهدية اليوم.",
+      giftReceived: "🎁 حصلت على ",
+      successTransfer: "تم التحويل بنجاح.",
+      successRegister: "تم التسجيل بنجاح."
+    }
+  },
+  en: {
+    title: "🐉 DRAGON COIN",
+    loginTitle: "Login",
+    username: "Username",
+    password: "Password",
+    loginBtn: "Login",
+    registerBtn: "Register",
+    welcome: "Welcome, ",
+    balanceText: "Your balance:",
+    toUser: "Recipient username",
+    amount: "Amount",
+    transferBtn: "Transfer",
+    giftBtn: "🎁 Daily Gift",
+    darkBtn: "🌓 Dark Mode",
+    homeBtn: "🏠 Back to Main Site",
+    errors: {
+      userNotFound: "User not found.",
+      wrongPass: "Incorrect password.",
+      empty: "Enter username and password.",
+      userExists: "Username already exists.",
+      wrongData: "Invalid data.",
+      toMissing: "Recipient not found.",
+      notEnough: "Insufficient balance.",
+      gifted: "You already claimed your daily gift.",
+      giftReceived: "🎁 You received ",
+      successTransfer: "Transfer successful.",
+      successRegister: "Registered successfully."
+    }
+  }
+};
+
+function saveData() {
+  localStorage.setItem('dragon_users', JSON.stringify(data));
+}
+
+function applyLang() {
+  const L = t[lang];
+  document.getElementById('title').textContent = L.title;
+  document.getElementById('loginTitle').textContent = L.loginTitle;
+  document.getElementById('username').placeholder = L.username;
+  document.getElementById('password').placeholder = L.password;
+  document.getElementById('loginBtn').textContent = L.loginBtn;
+  document.getElementById('registerBtn').textContent = L.registerBtn;
+  document.getElementById('balanceText').firstChild.textContent = L.balanceText + ' ';
+  document.getElementById('toUser').placeholder = L.toUser;
+  document.getElementById('amount').placeholder = L.amount;
+  document.getElementById('transferBtn').textContent = L.transferBtn;
+  document.getElementById('giftBtn').textContent = L.giftBtn;
+  document.getElementById('darkBtn').textContent = L.darkBtn;
+  document.getElementById('homeBtn').textContent = L.homeBtn;
+  document.getElementById('langBtn').textContent = lang === 'ar' ? 'ع' : 'E';
+}
+
+function toggleLang() {
+  lang = lang === 'ar' ? 'en' : 'ar';
+  applyLang();
+}
+
+function login() {
+  const u = username.value.trim();
+  const p = password.value.trim();
+  const L = t[lang].errors;
+  if (!data[u]) return alert(L.userNotFound);
+  if (data[u].password !== p) return alert(L.wrongPass);
+  currentUser = u;
+  openMain();
+}
+
+function register() {
+  const u = username.value.trim();
+  const p = password.value.trim();
+  const L = t[lang].errors;
+  if (!u || !p) return alert(L.empty);
+  if (data[u]) return alert(L.userExists);
+  data[u] = { password: p, balance: 0, lastGift: 0 };
+  saveData();
+  alert(L.successRegister);
+}
+
+function openMain() {
+  login.style.display = 'none';
+  main.style.display = 'block';
+  userDisplay.textContent = currentUser;
+  updateBalance();
+  applyLang();
+}
+
+function updateBalance() {
+  balance.textContent = data[currentUser].balance.toFixed(2);
+}
+
+function transfer() {
+  const to = toUser.value.trim();
+  const amt = parseFloat(amount.value);
+  const L = t[lang].errors;
+  if (!to || isNaN(amt) || amt <= 0) return alert(L.wrongData);
+  if (!data[to]) return alert(L.toMissing);
+  if (data[currentUser].balance < amt) return alert(L.notEnough);
+  data[currentUser].balance -= amt;
+  data[to].balance += amt;
+  saveData();
+  updateBalance();
+  alert(L.successTransfer);
+}
+
+function dailyGift() {
+  const now = Date.now();
+  const diff = now - data[currentUser].lastGift;
+  const L = t[lang].errors;
+  if (diff < 86400000) return alert(L.gifted);
+  const gift = (Math.random() * 0.5 + 0.5).toFixed(2);
+  data[currentUser].balance += parseFloat(gift);
+  data[currentUser].lastGift = now;
+  saveData();
+  updateBalance();
+  alert(L.giftReceived + gift + ' DRG');
+}
+
+function toggleDarkMode() {
+  dark = !dark;
+  document.body.classList.toggle('dark', dark);
+}
+
+applyLang();
+</script>
+
 </body>
 </html>
