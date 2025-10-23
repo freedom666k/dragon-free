@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRAGON COIN</title>
+<link rel="stylesheet" href="style.css">
+<script src="script.js" defer></script>
+</head>
+<body class="dark">
+<div class="container">
+  <h1>🐉 مرحبًا بك في DRAGON COIN</h1>
+
+  <div id="loginSection">
+    <h3>تسجيل الدخول / إنشاء محفظة</h3>
+    <input type="text" id="username" placeholder="اسم المستخدم">
+    <button onclick="login()">تسجيل</button>
+  </div>
+
+  <div id="walletSection" style="display:none;">
+    <h3>محفظتك:</h3>
+    <p>الاسم: <span id="userDisplay"></span></p>
+    <p>الرصيد: <span id="balanceDisplay"></span> 💰</p>
+
+    <button onclick="dailyGift()">🎁 هدية يومية</button>
+
+    <h3>تحويل DRAGON</h3>
+    <input type="text" id="targetUser" placeholder="إلى من؟">
+    <input type="number" id="amount" placeholder="المبلغ">
+    <button onclick="transfer()">تحويل</button>
+
+    <p id="message"></p>
+
+    <button onclick="logout()">تسجيل خروج</button>
+    <button onclick="toggleMode()">☀️ / 🌙</button>
+    <button onclick="goHome()">عودة للموقع الرئيسي</button>
+  </div>
+</div>
+</body>
+</html>
