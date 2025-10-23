@@ -19,9 +19,7 @@
     color: #58a6ff;
     box-shadow: 0 0 10px rgba(0,0,0,0.4);
   }
-  main {
-    margin-top: 40px;
-  }
+  main { margin-top: 40px; }
   input {
     padding: 10px;
     border-radius: 10px;
@@ -39,16 +37,9 @@
     cursor: pointer;
     transition: background 0.3s;
   }
-  button:hover {
-    background: #2ea043;
-  }
-  .dark {
-    background-color: #f0f6fc;
-    color: #0d1117;
-  }
-  .btns {
-    margin-top: 30px;
-  }
+  button:hover { background: #2ea043; }
+  .dark { background-color: #f0f6fc; color: #0d1117; }
+  .btns { margin-top: 30px; }
 </style>
 </head>
 <body>
@@ -72,7 +63,6 @@
       <input type="text" id="toUser" placeholder="اسم المستلم">
       <input type="number" id="amount" placeholder="المبلغ">
       <button id="transferBtn" onclick="transfer()">تحويل</button><br>
-
       <button id="giftBtn" onclick="dailyGift()">🎁 الهدية اليومية</button>
     </div>
 
@@ -90,7 +80,6 @@ let currentUser = null;
 let dark = false;
 let lang = 'ar';
 
-// الترجمة الكاملة
 const t = {
   ar: {
     title: "🐉 DRAGON COIN",
@@ -152,100 +141,76 @@ const t = {
   }
 };
 
-function saveData() {
-  localStorage.setItem('dragon_users', JSON.stringify(data));
+function $(id){return document.getElementById(id);}
+function saveData(){localStorage.setItem('dragon_users',JSON.stringify(data));}
+function applyLang(){
+  const L=t[lang];
+  $('title').textContent=L.title;
+  $('loginTitle').textContent=L.loginTitle;
+  $('username').placeholder=L.username;
+  $('password').placeholder=L.password;
+  $('loginBtn').textContent=L.loginBtn;
+  $('registerBtn').textContent=L.registerBtn;
+  $('balanceText').firstChild.textContent=L.balanceText+' ';
+  $('toUser').placeholder=L.toUser;
+  $('amount').placeholder=L.amount;
+  $('transferBtn').textContent=L.transferBtn;
+  $('giftBtn').textContent=L.giftBtn;
+  $('darkBtn').textContent=L.darkBtn;
+  $('homeBtn').textContent=L.homeBtn;
+  $('langBtn').textContent=lang==='ar'?'ع':'E';
 }
-
-function applyLang() {
-  const L = t[lang];
-  document.getElementById('title').textContent = L.title;
-  document.getElementById('loginTitle').textContent = L.loginTitle;
-  document.getElementById('username').placeholder = L.username;
-  document.getElementById('password').placeholder = L.password;
-  document.getElementById('loginBtn').textContent = L.loginBtn;
-  document.getElementById('registerBtn').textContent = L.registerBtn;
-  document.getElementById('balanceText').firstChild.textContent = L.balanceText + ' ';
-  document.getElementById('toUser').placeholder = L.toUser;
-  document.getElementById('amount').placeholder = L.amount;
-  document.getElementById('transferBtn').textContent = L.transferBtn;
-  document.getElementById('giftBtn').textContent = L.giftBtn;
-  document.getElementById('darkBtn').textContent = L.darkBtn;
-  document.getElementById('homeBtn').textContent = L.homeBtn;
-  document.getElementById('langBtn').textContent = lang === 'ar' ? 'ع' : 'E';
+function toggleLang(){lang=lang==='ar'?'en':'ar';applyLang();}
+function login(){
+  const u=$('username').value.trim();
+  const p=$('password').value.trim();
+  const L=t[lang].errors;
+  if(!data[u])return alert(L.userNotFound);
+  if(data[u].password!==p)return alert(L.wrongPass);
+  currentUser=u;openMain();
 }
-
-function toggleLang() {
-  lang = lang === 'ar' ? 'en' : 'ar';
-  applyLang();
+function register(){
+  const u=$('username').value.trim();
+  const p=$('password').value.trim();
+  const L=t[lang].errors;
+  if(!u||!p)return alert(L.empty);
+  if(data[u])return alert(L.userExists);
+  data[u]={password:p,balance:0,lastGift:0};
+  saveData();alert(L.successRegister);
 }
-
-function login() {
-  const u = username.value.trim();
-  const p = password.value.trim();
-  const L = t[lang].errors;
-  if (!data[u]) return alert(L.userNotFound);
-  if (data[u].password !== p) return alert(L.wrongPass);
-  currentUser = u;
-  openMain();
-}
-
-function register() {
-  const u = username.value.trim();
-  const p = password.value.trim();
-  const L = t[lang].errors;
-  if (!u || !p) return alert(L.empty);
-  if (data[u]) return alert(L.userExists);
-  data[u] = { password: p, balance: 0, lastGift: 0 };
-  saveData();
-  alert(L.successRegister);
-}
-
-function openMain() {
-  login.style.display = 'none';
-  main.style.display = 'block';
-  userDisplay.textContent = currentUser;
+function openMain(){
+  $('login').style.display='none';
+  $('main').style.display='block';
+  $('userDisplay').textContent=currentUser;
   updateBalance();
   applyLang();
 }
-
-function updateBalance() {
-  balance.textContent = data[currentUser].balance.toFixed(2);
+function updateBalance(){
+  $('balance').textContent=data[currentUser].balance.toFixed(2);
 }
-
-function transfer() {
-  const to = toUser.value.trim();
-  const amt = parseFloat(amount.value);
-  const L = t[lang].errors;
-  if (!to || isNaN(amt) || amt <= 0) return alert(L.wrongData);
-  if (!data[to]) return alert(L.toMissing);
-  if (data[currentUser].balance < amt) return alert(L.notEnough);
-  data[currentUser].balance -= amt;
-  data[to].balance += amt;
-  saveData();
-  updateBalance();
-  alert(L.successTransfer);
+function transfer(){
+  const to=$('toUser').value.trim();
+  const amt=parseFloat($('amount').value);
+  const L=t[lang].errors;
+  if(!to||isNaN(amt)||amt<=0)return alert(L.wrongData);
+  if(!data[to])return alert(L.toMissing);
+  if(data[currentUser].balance<amt)return alert(L.notEnough);
+  data[currentUser].balance-=amt;
+  data[to].balance+=amt;
+  saveData();updateBalance();alert(L.successTransfer);
 }
-
-function dailyGift() {
-  const now = Date.now();
-  const diff = now - data[currentUser].lastGift;
-  const L = t[lang].errors;
-  if (diff < 86400000) return alert(L.gifted);
-  const gift = (Math.random() * 0.5 + 0.5).toFixed(2);
-  data[currentUser].balance += parseFloat(gift);
-  data[currentUser].lastGift = now;
-  saveData();
-  updateBalance();
-  alert(L.giftReceived + gift + ' DRG');
+function dailyGift(){
+  const now=Date.now();
+  const diff=now-data[currentUser].lastGift;
+  const L=t[lang].errors;
+  if(diff<86400000)return alert(L.gifted);
+  const gift=(Math.random()*0.5+0.5).toFixed(2);
+  data[currentUser].balance+=parseFloat(gift);
+  data[currentUser].lastGift=now;
+  saveData();updateBalance();alert(L.giftReceived+gift+' DRG');
 }
-
-function toggleDarkMode() {
-  dark = !dark;
-  document.body.classList.toggle('dark', dark);
-}
-
+function toggleDarkMode(){dark=!dark;document.body.classList.toggle('dark',dark);}
 applyLang();
 </script>
-
 </body>
 </html>
