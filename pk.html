@@ -9,9 +9,21 @@
 </head>
 <body class="dark">
 <div class="container">
-  <h1>🔒 دخول إلى DRAGON COIN</h1>
-  <input type="password" id="passwordInput" placeholder="اكتب كلمة السر">
-  <button onclick="checkPassword()">دخول</button>
+  <h1>🐉 DRAGON COIN</h1>
+  <div id="setupSection">
+    <p>مرحباً بك! أنشئ حسابك أولاً</p>
+    <input type="text" id="newUsername" placeholder="اسم المستخدم">
+    <input type="password" id="newPassword" placeholder="كلمة السر الجديدة">
+    <button onclick="registerUser()">إنشاء حساب</button>
+  </div>
+
+  <div id="loginSection" style="display:none;">
+    <p>تسجيل الدخول</p>
+    <input type="text" id="loginUsername" placeholder="اسم المستخدم">
+    <input type="password" id="loginPassword" placeholder="كلمة السر">
+    <button onclick="login()">دخول</button>
+  </div>
+
   <button onclick="toggleMode()">☀️ / 🌙</button>
   <button onclick="goHome()">عودة للموقع الرئيسي</button>
 </div>
