@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>DRAGON COIN | تسجيل الدخول</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Cairo", sans-serif;
+    }
+    body {
+      background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    .container {
+      background-color: rgba(0,0,0,0.4);
+      padding: 30px;
+      border-radius: 20px;
+      width: 370px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.1);
+      text-align: center;
+      transition: 0.4s ease-in-out;
+    }
+    .container:hover {
+      box-shadow: 0 0 35px rgba(255,255,255,0.2);
+    }
+    h1 {
+      margin-bottom: 10px;
+      font-size: 26px;
+      letter-spacing: 1px;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+    }
+    input {
+      width: 90%;
+      margin: 8px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #1b2735;
+      color: white;
+      outline: none;
+    }
+    input:focus {
+      background-color: #22344a;
+    }
+    button {
+      width: 95%;
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      opacity: 0.8;
+      transform: scale(1.03);
+    }
+    #captcha { display: none; margin-top: 15px; }
+    #error { color: #ff5555; margin-top: 10px; min-height: 20px; }
+    #toggle { color: #00ffff; cursor: pointer; display: inline-block; margin-top: 10px; }
+    .remember {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 5px;
+    }
+    .remember label { cursor: pointer; }
+    .logo {
+      font-size: 40px;
+      margin-bottom: 10px;
+      animation: glow 3s infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00ffff; }
+      to { text-shadow: 0 0 25px #00ffff; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">🐉</div>
+    <h1>DRAGON COIN</h1>
+    <h3 id="title">تسجيل الدخول</h3>
+    <input type="text" id="username" placeholder="اسم المستخدم">
+    <input type="password" id="password" placeholder="كلمة المرور">
+    <div id="extraField" style="display:none;">
+      <input type="password" id="confirm" placeholder="تأكيد كلمة المرور">
+    </div>
+
+    <div class="remember">
+      <input type="checkbox" id="remember">
+      <label for="remember">تذكرني</label>
+    </div>
+
+    <button id="mainBtn" onclick="handleAction()">دخول</button>
+
+    <div id="captcha">
+      <p id="question"></p>
+      <input type="text" id="answer" placeholder="الإجابة">
+      <button onclick="checkCaptcha()">تحقق</button>
+    </div>
+
+    <p id="error"></p>
+    <span id="toggle" onclick="toggleMode()">إنشاء حساب جديد</span>
+  </div>
+
+  <script>
+    let isSignup = false;
+    let correctAnswer = null;
+    let currentUser = null;
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    // لو المستخدم متذكر، يدخل تلقائي
+    const rememberedUser = localStorage.getItem("rememberedUser");
+    if (rememberedUser) {
+      localStorage.setItem("loggedUser", rememberedUser);
+      window.location.href = "dashboard.html";
+    }
+
+    function toggleMode() {
+      isSignup = !isSignup;
+      document.getElementById("title").textContent = isSignup ? "إنشاء حساب جديد" : "تسجيل الدخول";
+      document.getElementById("mainBtn").textContent = isSignup ? "إنشاء حساب" : "دخول";
+      document.getElementById("extraField").style.display = isSignup ? "block" : "none";
+      document.getElementById("error").textContent = "";
+      document.getElementById("captcha").style.display = "none";
+    }
+
+    function handleAction() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const confirm = document.getElementById("confirm").value.trim();
+      const error = document.getElementById("error");
+
+      if (!username || !password) {
+        error.textContent = "املأ جميع الحقول أولاً.";
+        return;
+      }
+
+      if (isSignup) {
+        if (users.find(u => u.username === username)) {
+          error.textContent = "اسم المستخدم مستخدم بالفعل.";
+          return;
+        }
+        if (password !== confirm) {
+          error.textContent = "كلمة المرور غير متطابقة.";
+          return;
+        }
+        users.push({ username, password });
+        localStorage.setItem("users", JSON.stringify(users));
+        error.style.color = "#00ff88";
+        error.textContent = "تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن.";
+        toggleMode();
+      } else {
+        const found = users.find(u => u.username === username && u.password === password);
+        if (found) {
+          currentUser = username;
+          error.textContent = "";
+          startCaptcha();
+        } else {
+          error.textContent = "اسم المستخدم أو كلمة المرور غير صحيحة.";
+        }
+      }
+    }
+
+    function startCaptcha() {
+      const num1 = Math.floor(Math.random() * 10);
+      const num2 = Math.floor(Math.random() * 10);
+      const operations = ["+", "-", "*"];
+      const op = operations[Math.floor(Math.random() * operations.length)];
+      const questionText = `${num1} ${op} ${num2}`;
+      correctAnswer = eval(questionText);
+
+      document.getElementById("captcha").style.display = "block";
+      document.getElementById("question").textContent = `تحقق: ما نتيجة ${questionText} ؟`;
+    }
+
+    function checkCaptcha() {
+      const answer = parseInt(document.getElementById("answer").value.trim());
+      const error = document.getElementById("error");
+
+      if (answer === correctAnswer) {
+        localStorage.setItem("loggedUser", currentUser);
+        if (document.getElementById("remember").checked) {
+          localStorage.setItem("rememberedUser", currentUser);
+        }
+        window.location.href = "dashboard.html";
+      } else {
+        error.textContent = "الإجابة غير صحيحة. حاول مجددًا.";
+      }
+    }
+  </script>
+</body>
+</html>
