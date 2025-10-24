@@ -18,12 +18,6 @@ button:hover{background-color:#cc4444;}
 .light-mode button{background-color:#ff5555;color:#fff;}
 .light-mode .toggle,.light-mode .langBtn{background-color:#ddd;color:#000;}
 .light-mode h1{color:#ff5555;}
-#captchaOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;justify-content:center;align-items:center;z-index:9999;}
-#captchaOverlay div{background:#161b22;padding:30px;border-radius:15px;text-align:center;max-width:350px;width:90%;color:#fff;}
-#captchaOverlay input{width:100%;padding:10px;border:none;border-radius:5px;margin:10px 0;background:#21262d;color:#fff;}
-#captchaOverlay input:focus{outline:none;border:1px solid #ff5555;}
-#captchaOverlay button{width:100%;padding:10px;background:#ff5555;color:#fff;border:none;border-radius:5px;margin-top:5px;}
-#captchaOverlay button:hover{background:#cc4444;}
 </style>
 </head>
 <body>
@@ -36,15 +30,6 @@ button:hover{background-color:#cc4444;}
   <button onclick="logout()">تسجيل خروج</button>
   <button class="toggle" onclick="toggleMode()">🌙 / ☀️</button>
   <button class="langBtn" onclick="toggleLanguage()">ع / E</button>
-</div>
-
-<div id="captchaOverlay">
-  <div>
-    <h2 id="captchaTitle">التحقق من أنك لست روبوت</h2>
-    <p id="captchaQuestion">ما هو 5 + 3 ؟</p>
-    <input type="text" id="captchaAnswer" placeholder="أدخل الإجابة">
-    <button onclick="verifyCaptcha()">تحقق</button>
-  </div>
 </div>
 
 <script>
@@ -116,18 +101,6 @@ function applyLanguage(){
     document.getElementById('balanceText').innerHTML=`Balance: <span id="balance">${balances[username].toFixed(2)}</span> DRAGON COIN`;
     document.getElementById('dailyBtn').textContent='💰 Daily Random Gift';
     document.getElementById('transferBtn').textContent='💸 Transfer Coins';
-  }
-}
-
-// كابتشا
-let captchaCorrectAnswer = 8; // 5+3
-function verifyCaptcha(){
-  const ans = parseInt(document.getElementById('captchaAnswer').value);
-  if(ans === captchaCorrectAnswer){
-    const overlay = document.getElementById('captchaOverlay');
-    overlay.parentNode.removeChild(overlay); // إزالة نهائية من DOM
-  } else {
-    alert('❌ الإجابة غير صحيحة حاول مرة أخرى!');
   }
 }
 </script>
