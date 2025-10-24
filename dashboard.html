@@ -28,7 +28,7 @@ button:hover{background-color:#cc4444;}
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="dashboardContainer">
   <h1 id="welcomeText">مرحبا <span id="userDisplay"></span>!</h1>
   <p id="balanceText">رصيدك الحالي: <span id="balance">0</span> DRAGON COIN</p>
   <button id="dailyBtn" onclick="addCoins()">💰 هدية يومية عشوائية</button>
@@ -38,7 +38,6 @@ button:hover{background-color:#cc4444;}
   <button class="langBtn" onclick="toggleLanguage()">ع / E</button>
 </div>
 
-<!-- التحقق من الروبوت -->
 <div id="captchaOverlay">
   <div>
     <h2 id="captchaTitle">التحقق من أنك لست روبوت</h2>
@@ -57,7 +56,7 @@ applyMode();
 let lang = localStorage.getItem('lang') || 'ar';
 applyLanguage();
 
-// جلب المستخدم
+// المستخدم
 const username = localStorage.getItem('username');
 if(!username || localStorage.getItem('loggedIn')!=='true'){
   alert('❌ لم يتم تسجيل الدخول!');
@@ -65,12 +64,11 @@ if(!username || localStorage.getItem('loggedIn')!=='true'){
 }
 document.getElementById('userDisplay').textContent = username;
 
-// تهيئة الرصيد
+// الرصيد
 let balances = JSON.parse(localStorage.getItem('balances')||'{}');
 if(!balances[username]) balances[username]=0;
 updateBalance();
 
-// هدايا يومية
 function addCoins(){
   const amount=(Math.random()*0.5+0.5).toFixed(2);
   balances[username]+=parseFloat(amount);
@@ -78,11 +76,8 @@ function addCoins(){
   updateBalance();
   alert((lang==='ar'?'🎁 حصلت على ':'🎁 You received ')+amount+' DRAGON COIN');
 }
-
-// تحديث الرصيد
 function updateBalance(){document.getElementById('balance').textContent=balances[username].toFixed(2);}
 
-// تحويل العملة
 function transfer(){
   const target=prompt(lang==='ar'?'ادخل اسم المستخدم المستلم:':'Enter recipient username:');
   if(!target){alert(lang==='ar'?'الاسم ناقص':'Name missing');return;}
@@ -99,7 +94,6 @@ function transfer(){
   alert((lang==='ar'?'✅ تم تحويل ':'✅ Transferred ')+amt+' DRAGON COIN إلى '+target);
 }
 
-// تسجيل خروج
 function logout(){
   localStorage.removeItem('loggedIn');
   localStorage.removeItem('username');
@@ -107,11 +101,9 @@ function logout(){
   window.location.href="login.html";
 }
 
-// تبديل الوضع
 function toggleMode(){darkMode=!darkMode;localStorage.setItem('darkMode',darkMode);applyMode();}
 function applyMode(){if(darkMode){document.body.classList.remove('light-mode');}else{document.body.classList.add('light-mode');}}
 
-// تبديل اللغة
 function toggleLanguage(){lang=(lang==='ar')?'en':'ar';localStorage.setItem('lang',lang);applyLanguage();}
 function applyLanguage(){
   if(lang==='ar'){
@@ -127,14 +119,13 @@ function applyLanguage(){
   }
 }
 
-// التحقق من الروبوت
+// كابتشا
 let captchaCorrectAnswer = 8; // 5+3
 function verifyCaptcha(){
   const ans = parseInt(document.getElementById('captchaAnswer').value);
   if(ans === captchaCorrectAnswer){
     const overlay = document.getElementById('captchaOverlay');
-    overlay.style.display='none';
-    overlay.parentElement.removeChild(overlay); // إزالة الكابتشا من DOM بالكامل
+    overlay.parentNode.removeChild(overlay); // إزالة نهائية من DOM
   } else {
     alert('❌ الإجابة غير صحيحة حاول مرة أخرى!');
   }
