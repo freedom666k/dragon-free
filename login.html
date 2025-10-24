@@ -11,9 +11,8 @@ body {
   color:#fff;
   display:flex;
   justify-content:center;
-  align-items:flex-start;
-  min-height:100vh;
-  padding-top:50px;
+  align-items:center;
+  height:100vh;
 }
 .container {
   background-color:#161b22;
@@ -24,7 +23,6 @@ body {
   text-align:center;
   box-shadow:0 0 15px rgba(0,0,0,0.4);
   border:1px solid #30363d;
-  margin-bottom:30px;
 }
 h2 {color:#ff5555;margin-bottom:20px;}
 input {
@@ -50,55 +48,52 @@ button {
   margin-top:5px;
 }
 button:hover {background-color:#cc4444;}
-.toggle {
+.toggle, .langBtn {
   background-color:#21262d;
   margin-top:15px;
   color:#fff;
 }
-.toggle:hover {background-color:#30363d;}
+.toggle:hover, .langBtn:hover {background-color:#30363d;}
 a {color:#ff5555;text-decoration:none;display:block;margin-top:10px;}
 a:hover {text-decoration:underline;}
 label {display:block;margin-top:10px;}
-.verify-container {display:none;margin-top:20px;padding:20px;border:1px solid #ff5555;border-radius:10px;background-color:#21262d;}
 .light-mode {
   background-color:#f4f4f4;
   color:#000;
 }
-.light-mode .container, .light-mode .verify-container {background-color:#fff;border-color:#ccc;color:#000;}
+.light-mode .container {background-color:#fff;border-color:#ccc;color:#000;}
 .light-mode input {background-color:#eee;color:#000;}
 .light-mode button {background-color:#ff5555;color:#fff;}
-.light-mode .toggle {background-color:#ddd;color:#000;}
+.light-mode .toggle, .light-mode .langBtn {background-color:#ddd;color:#000;}
 .light-mode h2 {color:#ff5555;}
 </style>
 </head>
 <body>
 <div class="container">
-  <h2>تسجيل الدخول</h2>
+  <h2 id="titleText">تسجيل الدخول</h2>
   <input type="text" id="username" placeholder="اسم المستخدم">
   <input type="password" id="password" placeholder="كلمة المرور">
   <label><input type="checkbox" id="remember"> تذكرني</label>
-  <button onclick="login()">دخول</button>
-  <a href="#" onclick="register()">إنشاء حساب جديد</a>
+  <button id="loginBtn" onclick="login()">دخول</button>
+  <a href="#" id="registerLink" onclick="register()">إنشاء حساب جديد</a>
   <button class="toggle" onclick="toggleMode()">🌙 / ☀️</button>
-</div>
-
-<div class="verify-container" id="verifyBox">
-  <h2>أنا لست روبوت</h2>
-  <p id="question"></p>
-  <input type="text" id="answer" placeholder="أدخل الإجابة هنا">
-  <button onclick="checkAnswer()">تحقق</button>
+  <button class="langBtn" onclick="toggleLanguage()">ع / E</button>
 </div>
 
 <script>
 let darkMode = localStorage.getItem('darkMode') === 'true';
+let lang = localStorage.getItem('lang') || 'ar';
 applyMode();
+applyLanguage();
 
-// إذا كان المستخدم مفعل "تذكرني"، نظهر له التحقق مباشرة
+// إذا كان المستخدم مفعل "تذكرني"، نعيد تسجيل دخوله تلقائياً
 const remembered = localStorage.getItem('rememberedUser');
 if(remembered){
   localStorage.setItem('username', remembered);
   localStorage.setItem('loggedIn', 'true');
-  showVerify();
+  alert(lang==='ar'?'تم تسجيل الدخول تلقائيًا':'Logged in automatically');
+  // يمكنك توجيهه مباشرة للداشبورد
+  window.location.href = "dashboard.html";
 }
 
 // تسجيل الدخول
@@ -108,7 +103,7 @@ function login(){
   const remember = document.getElementById('remember').checked;
 
   if(!user || !pass){
-    alert('يرجى إدخال اسم المستخدم وكلمة المرور');
+    alert(lang==='ar'?'يرجى إدخال اسم المستخدم وكلمة المرور':'Please enter username and password');
     return;
   }
 
@@ -117,58 +112,27 @@ function login(){
     localStorage.setItem('username', user);
     localStorage.setItem('loggedIn', 'true');
     if(remember) localStorage.setItem('rememberedUser', user);
-    alert('تم تسجيل الدخول بنجاح ✅');
-    showVerify();
+    alert(lang==='ar'?'تم تسجيل الدخول بنجاح ✅':'Logged in successfully ✅');
+    window.location.href = "dashboard.html";
   } else {
-    alert('❌ بيانات الدخول غير صحيحة');
+    alert(lang==='ar'?'❌ بيانات الدخول غير صحيحة':'❌ Incorrect login data');
   }
 }
 
 // إنشاء حساب جديد مع تأكيد كلمة المرور
 function register(){
-  const user = prompt("أدخل اسم المستخدم الجديد:");
-  if(!user){alert("الاسم ناقص");return;}
-  const pass = prompt("أدخل كلمة المرور:");
-  if(!pass){alert("كلمة المرور ناقصة");return;}
-  const pass2 = prompt("أكد كلمة المرور:");
-  if(pass !== pass2){alert("كلمة المرور غير متطابقة");return;}
+  const user = prompt(lang==='ar'?'أدخل اسم المستخدم الجديد:':'Enter new username:');
+  if(!user){alert(lang==='ar'?'الاسم ناقص':'Name missing');return;}
+  const pass = prompt(lang==='ar'?'أدخل كلمة المرور:':'Enter password:');
+  if(!pass){alert(lang==='ar'?'كلمة المرور ناقصة':'Password missing');return;}
+  const pass2 = prompt(lang==='ar'?'أكد كلمة المرور:':'Confirm password:');
+  if(pass !== pass2){alert(lang==='ar'?'كلمة المرور غير متطابقة':'Passwords do not match');return;}
 
   const data = JSON.parse(localStorage.getItem('users') || '{}');
-  if(data[user]){alert("هذا المستخدم موجود بالفعل");return;}
+  if(data[user]){alert(lang==='ar'?'هذا المستخدم موجود بالفعل':'User already exists');return;}
   data[user] = {password: pass, created: new Date().toLocaleDateString()};
   localStorage.setItem('users', JSON.stringify(data));
-  alert('تم إنشاء الحساب بنجاح 🎉 يمكنك الآن تسجيل الدخول');
-}
-
-// عرض صندوق التحقق
-function showVerify(){
-  document.getElementById('verifyBox').style.display = 'block';
-  generateQuestion();
-}
-
-// توليد سؤال عشوائي
-let correctAnswer = null;
-function generateQuestion(){
-  const num1 = Math.floor(Math.random()*10)+1;
-  const num2 = Math.floor(Math.random()*10)+1;
-  const ops = ["+","-","*"];
-  const op = ops[Math.floor(Math.random()*ops.length)];
-  const questionText = `${num1} ${op} ${num2}`;
-  correctAnswer = eval(questionText);
-  document.getElementById('question').textContent = `ما ناتج ${questionText} ؟`;
-}
-
-// التحقق من الإجابة
-function checkAnswer(){
-  const ans = parseInt(document.getElementById('answer').value.trim());
-  if(ans === correctAnswer){
-    alert('✅ تحقق ناجح! يمكنك الآن الدخول للداشبورد');
-    window.location.href = "dashboard.html";
-  } else {
-    alert('❌ الإجابة غير صحيحة، حاول مرة أخرى.');
-    generateQuestion();
-    document.getElementById('answer').value = '';
-  }
+  alert(lang==='ar'?'تم إنشاء الحساب بنجاح 🎉 يمكنك الآن تسجيل الدخول':'Account created 🎉 You can now login');
 }
 
 // تبديل الوضع
@@ -183,6 +147,31 @@ function applyMode(){
     document.body.classList.remove('light-mode');
   } else {
     document.body.classList.add('light-mode');
+  }
+}
+
+// تبديل اللغة
+function toggleLanguage(){
+  lang = (lang==='ar') ? 'en' : 'ar';
+  localStorage.setItem('lang', lang);
+  applyLanguage();
+}
+
+function applyLanguage(){
+  if(lang==='ar'){
+    document.getElementById('titleText').textContent = 'تسجيل الدخول';
+    document.getElementById('username').placeholder = 'اسم المستخدم';
+    document.getElementById('password').placeholder = 'كلمة المرور';
+    document.querySelector('label').textContent = 'تذكرني';
+    document.getElementById('loginBtn').textContent = 'دخول';
+    document.getElementById('registerLink').textContent = 'إنشاء حساب جديد';
+  } else {
+    document.getElementById('titleText').textContent = 'Login';
+    document.getElementById('username').placeholder = 'Username';
+    document.getElementById('password').placeholder = 'Password';
+    document.querySelector('label').textContent = 'Remember me';
+    document.getElementById('loginBtn').textContent = 'Login';
+    document.getElementById('registerLink').textContent = 'Create new account';
   }
 }
 </script>
