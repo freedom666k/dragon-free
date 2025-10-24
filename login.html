@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تسجيل الدخول</title>
+<title>تسجيل الدخول + تحقق</title>
 <style>
 * {margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;transition:0.3s;}
 body {
@@ -11,8 +11,9 @@ body {
   color:#fff;
   display:flex;
   justify-content:center;
-  align-items:center;
-  height:100vh;
+  align-items:flex-start;
+  min-height:100vh;
+  padding-top:50px;
 }
 .container {
   background-color:#161b22;
@@ -23,8 +24,9 @@ body {
   text-align:center;
   box-shadow:0 0 15px rgba(0,0,0,0.4);
   border:1px solid #30363d;
+  margin-bottom:30px;
 }
-h2 {color:#58a6ff;margin-bottom:20px;}
+h2 {color:#ff5555;margin-bottom:20px;}
 input {
   width:100%;
   padding:10px;
@@ -35,39 +37,38 @@ input {
   color:#fff;
   font-size:16px;
 }
-input:focus {outline:none;border:1px solid #58a6ff;}
+input:focus {outline:none;border:1px solid #ff5555;}
 button {
   width:100%;
   padding:10px;
-  background-color:#238636;
+  background-color:#ff5555;
   color:#fff;
   border:none;
   border-radius:5px;
   font-size:16px;
   cursor:pointer;
+  margin-top:5px;
 }
-button:hover {background-color:#2ea043;}
+button:hover {background-color:#cc4444;}
 .toggle {
   background-color:#21262d;
   margin-top:15px;
+  color:#fff;
 }
 .toggle:hover {background-color:#30363d;}
-a {
-  color:#58a6ff;
-  text-decoration:none;
-  display:block;
-  margin-top:10px;
-}
+a {color:#ff5555;text-decoration:none;display:block;margin-top:10px;}
 a:hover {text-decoration:underline;}
+label {display:block;margin-top:10px;}
+.verify-container {display:none;margin-top:20px;padding:20px;border:1px solid #ff5555;border-radius:10px;background-color:#21262d;}
 .light-mode {
   background-color:#f4f4f4;
   color:#000;
 }
-.light-mode .container {background-color:#fff;border-color:#ccc;}
+.light-mode .container, .light-mode .verify-container {background-color:#fff;border-color:#ccc;color:#000;}
 .light-mode input {background-color:#eee;color:#000;}
-.light-mode button {background-color:#0366d6;}
+.light-mode button {background-color:#ff5555;color:#fff;}
 .light-mode .toggle {background-color:#ddd;color:#000;}
-.light-mode h2 {color:#0366d6;}
+.light-mode h2 {color:#ff5555;}
 </style>
 </head>
 <body>
@@ -75,18 +76,37 @@ a:hover {text-decoration:underline;}
   <h2>تسجيل الدخول</h2>
   <input type="text" id="username" placeholder="اسم المستخدم">
   <input type="password" id="password" placeholder="كلمة المرور">
+  <label><input type="checkbox" id="remember"> تذكرني</label>
   <button onclick="login()">دخول</button>
   <a href="#" onclick="register()">إنشاء حساب جديد</a>
   <button class="toggle" onclick="toggleMode()">🌙 / ☀️</button>
+</div>
+
+<div class="verify-container" id="verifyBox">
+  <h2>أنا لست روبوت</h2>
+  <p id="question"></p>
+  <input type="text" id="answer" placeholder="أدخل الإجابة هنا">
+  <button onclick="checkAnswer()">تحقق</button>
 </div>
 
 <script>
 let darkMode = localStorage.getItem('darkMode') === 'true';
 applyMode();
 
+// إذا كان المستخدم مفعل "تذكرني"، نظهر له التحقق مباشرة
+const remembered = localStorage.getItem('rememberedUser');
+if(remembered){
+  localStorage.setItem('username', remembered);
+  localStorage.setItem('loggedIn', 'true');
+  showVerify();
+}
+
+// تسجيل الدخول
 function login(){
   const user = document.getElementById('username').value.trim();
   const pass = document.getElementById('password').value.trim();
+  const remember = document.getElementById('remember').checked;
+
   if(!user || !pass){
     alert('يرجى إدخال اسم المستخدم وكلمة المرور');
     return;
@@ -95,24 +115,63 @@ function login(){
   const data = JSON.parse(localStorage.getItem('users') || '{}');
   if(data[user] && data[user].password === pass){
     localStorage.setItem('username', user);
+    localStorage.setItem('loggedIn', 'true');
+    if(remember) localStorage.setItem('rememberedUser', user);
     alert('تم تسجيل الدخول بنجاح ✅');
-    window.location.href = "dashboard.html";
+    showVerify();
   } else {
-    alert('بيانات الدخول غير صحيحة ❌');
+    alert('❌ بيانات الدخول غير صحيحة');
   }
 }
 
+// إنشاء حساب جديد مع تأكيد كلمة المرور
 function register(){
   const user = prompt("أدخل اسم المستخدم الجديد:");
+  if(!user){alert("الاسم ناقص");return;}
   const pass = prompt("أدخل كلمة المرور:");
-  if(!user || !pass){alert("البيانات ناقصة");return;}
+  if(!pass){alert("كلمة المرور ناقصة");return;}
+  const pass2 = prompt("أكد كلمة المرور:");
+  if(pass !== pass2){alert("كلمة المرور غير متطابقة");return;}
+
   const data = JSON.parse(localStorage.getItem('users') || '{}');
   if(data[user]){alert("هذا المستخدم موجود بالفعل");return;}
   data[user] = {password: pass, created: new Date().toLocaleDateString()};
   localStorage.setItem('users', JSON.stringify(data));
-  alert('تم إنشاء الحساب بنجاح 🎉');
+  alert('تم إنشاء الحساب بنجاح 🎉 يمكنك الآن تسجيل الدخول');
 }
 
+// عرض صندوق التحقق
+function showVerify(){
+  document.getElementById('verifyBox').style.display = 'block';
+  generateQuestion();
+}
+
+// توليد سؤال عشوائي
+let correctAnswer = null;
+function generateQuestion(){
+  const num1 = Math.floor(Math.random()*10)+1;
+  const num2 = Math.floor(Math.random()*10)+1;
+  const ops = ["+","-","*"];
+  const op = ops[Math.floor(Math.random()*ops.length)];
+  const questionText = `${num1} ${op} ${num2}`;
+  correctAnswer = eval(questionText);
+  document.getElementById('question').textContent = `ما ناتج ${questionText} ؟`;
+}
+
+// التحقق من الإجابة
+function checkAnswer(){
+  const ans = parseInt(document.getElementById('answer').value.trim());
+  if(ans === correctAnswer){
+    alert('✅ تحقق ناجح! يمكنك الآن الدخول للداشبورد');
+    window.location.href = "dashboard.html";
+  } else {
+    alert('❌ الإجابة غير صحيحة، حاول مرة أخرى.');
+    generateQuestion();
+    document.getElementById('answer').value = '';
+  }
+}
+
+// تبديل الوضع
 function toggleMode(){
   darkMode = !darkMode;
   localStorage.setItem('darkMode', darkMode);
