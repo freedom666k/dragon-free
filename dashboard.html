@@ -33,7 +33,6 @@ button:hover{background-color:#cc4444;}
   <p id="balanceText">رصيدك الحالي: <span id="balance">0</span> DRAGON COIN</p>
   <button id="dailyBtn" onclick="addCoins()">💰 هدية يومية عشوائية</button>
   <button id="transferBtn" onclick="transfer()">💸 تحويل عملة</button>
-  <button id="storeBtn" onclick="openStore()">🏪 متجر</button>
   <button onclick="logout()">تسجيل خروج</button>
   <button class="toggle" onclick="toggleMode()">🌙 / ☀️</button>
   <button class="langBtn" onclick="toggleLanguage()">ع / E</button>
@@ -100,9 +99,6 @@ function transfer(){
   alert((lang==='ar'?'✅ تم تحويل ':'✅ Transferred ')+amt+' DRAGON COIN إلى '+target);
 }
 
-// متجر
-function openStore(){alert(lang==='ar'?'🏪 المتجر قيد التطوير':'🏪 Store under development');}
-
 // تسجيل خروج
 function logout(){
   localStorage.removeItem('loggedIn');
@@ -123,13 +119,11 @@ function applyLanguage(){
     document.getElementById('balanceText').innerHTML=`رصيدك الحالي: <span id="balance">${balances[username].toFixed(2)}</span> DRAGON COIN`;
     document.getElementById('dailyBtn').textContent='💰 هدية يومية عشوائية';
     document.getElementById('transferBtn').textContent='💸 تحويل عملة';
-    document.getElementById('storeBtn').textContent='🏪 متجر';
   } else {
     document.getElementById('welcomeText').innerHTML=`Welcome <span id="userDisplay">${username}</span>!`;
     document.getElementById('balanceText').innerHTML=`Balance: <span id="balance">${balances[username].toFixed(2)}</span> DRAGON COIN`;
     document.getElementById('dailyBtn').textContent='💰 Daily Random Gift';
     document.getElementById('transferBtn').textContent='💸 Transfer Coins';
-    document.getElementById('storeBtn').textContent='🏪 Store';
   }
 }
 
@@ -138,7 +132,9 @@ let captchaCorrectAnswer = 8; // 5+3
 function verifyCaptcha(){
   const ans = parseInt(document.getElementById('captchaAnswer').value);
   if(ans === captchaCorrectAnswer){
-    document.getElementById('captchaOverlay').style.display='none';
+    const overlay = document.getElementById('captchaOverlay');
+    overlay.style.display='none';
+    overlay.parentElement.removeChild(overlay); // إزالة الكابتشا من DOM بالكامل
   } else {
     alert('❌ الإجابة غير صحيحة حاول مرة أخرى!');
   }
