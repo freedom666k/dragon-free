@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم - DRAGON COIN</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;transition:0.3s;}
+body{background-color:#0d1117;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px;}
+.container{background-color:#161b22;padding:30px;border-radius:15px;width:90%;max-width:500px;text-align:center;box-shadow:0 0 15px rgba(0,0,0,0.4);border:1px solid #30363d;margin-bottom:20px;}
+h1{color:#ff5555;margin-bottom:20px;}
+button{width:100%;padding:12px;background-color:#ff5555;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;margin:10px 0;}
+button:hover{background-color:#cc4444;}
+.toggle,.langBtn{background-color:#21262d;margin-top:10px;color:#fff;}
+.toggle:hover,.langBtn:hover{background-color:#30363d;}
+.light-mode{background-color:#f4f4f4;color:#000;}
+.light-mode .container{background-color:#fff;border-color:#ccc;color:#000;}
+.light-mode button{background-color:#ff5555;color:#fff;}
+.light-mode .toggle,.light-mode .langBtn{background-color:#ddd;color:#000;}
+.light-mode h1{color:#ff5555;}
+#captchaOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;justify-content:center;align-items:center;z-index:9999;}
+#captchaOverlay div{background:#161b22;padding:30px;border-radius:15px;text-align:center;max-width:350px;width:90%;color:#fff;}
+#captchaOverlay input{width:100%;padding:10px;border:none;border-radius:5px;margin:10px 0;background:#21262d;color:#fff;}
+#captchaOverlay input:focus{outline:none;border:1px solid #ff5555;}
+#captchaOverlay button{width:100%;padding:10px;background:#ff5555;color:#fff;border:none;border-radius:5px;margin-top:5px;}
+#captchaOverlay button:hover{background:#cc4444;}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="welcomeText">مرحبا <span id="userDisplay"></span>!</h1>
+  <p id="balanceText">رصيدك الحالي: <span id="balance">0</span> DRAGON COIN</p>
+  <button id="dailyBtn" onclick="addCoins()">💰 هدية يومية عشوائية</button>
+  <button id="transferBtn" onclick="transfer()">💸 تحويل عملة</button>
+  <button id="storeBtn" onclick="openStore()">🏪 متجر</button>
+  <button onclick="logout()">تسجيل خروج</button>
+  <button class="toggle" onclick="toggleMode()">🌙 / ☀️</button>
+  <button class="langBtn" onclick="toggleLanguage()">ع / E</button>
+</div>
+
+<!-- التحقق من الروبوت -->
+<div id="captchaOverlay">
+  <div>
+    <h2 id="captchaTitle">التحقق من أنك لست روبوت</h2>
+    <p id="captchaQuestion">ما هو 5 + 3 ؟</p>
+    <input type="text" id="captchaAnswer" placeholder="أدخل الإجابة">
+    <button onclick="verifyCaptcha()">تحقق</button>
+  </div>
+</div>
+
+<script>
+// الوضع الداكن
+let darkMode = localStorage.getItem('darkMode')==='true';
+applyMode();
+
+// اللغة
+let lang = localStorage.getItem('lang') || 'ar';
+applyLanguage();
+
+// جلب المستخدم
+const username = localStorage.getItem('username');
+if(!username || localStorage.getItem('loggedIn')!=='true'){
+  alert('❌ لم يتم تسجيل الدخول!');
+  window.location.href = "login.html";
+}
+document.getElementById('userDisplay').textContent = username;
+
+// تهيئة الرصيد
+let balances = JSON.parse(localStorage.getItem('balances')||'{}');
+if(!balances[username]) balances[username]=0;
+updateBalance();
+
+// هدايا يومية
+function addCoins(){
+  const amount=(Math.random()*0.5+0.5).toFixed(2);
+  balances[username]+=parseFloat(amount);
+  localStorage.setItem('balances',JSON.stringify(balances));
+  updateBalance();
+  alert((lang==='ar'?'🎁 حصلت على ':'🎁 You received ')+amount+' DRAGON COIN');
+}
+
+// تحديث الرصيد
+function updateBalance(){document.getElementById('balance').textContent=balances[username].toFixed(2);}
+
+// تحويل العملة
+function transfer(){
+  const target=prompt(lang==='ar'?'ادخل اسم المستخدم المستلم:':'Enter recipient username:');
+  if(!target){alert(lang==='ar'?'الاسم ناقص':'Name missing');return;}
+  const amt=parseFloat(prompt(lang==='ar'?'ادخل المبلغ:':'Enter amount:'));
+  if(isNaN(amt)||amt<=0){alert(lang==='ar'?'المبلغ غير صحيح':'Invalid amount');return;}
+  if(amt>balances[username]){alert(lang==='ar'?'رصيدك غير كافي':'Insufficient balance');return;}
+  let bal=JSON.parse(localStorage.getItem('balances')||'{}');
+  if(!bal[target]) bal[target]=0;
+  bal[username]-=amt;
+  bal[target]+=amt;
+  localStorage.setItem('balances',JSON.stringify(bal));
+  balances=bal;
+  updateBalance();
+  alert((lang==='ar'?'✅ تم تحويل ':'✅ Transferred ')+amt+' DRAGON COIN إلى '+target);
+}
+
+// متجر
+function openStore(){alert(lang==='ar'?'🏪 المتجر قيد التطوير':'🏪 Store under development');}
+
+// تسجيل خروج
+function logout(){
+  localStorage.removeItem('loggedIn');
+  localStorage.removeItem('username');
+  localStorage.removeItem('rememberedUser');
+  window.location.href="login.html";
+}
+
+// تبديل الوضع
+function toggleMode(){darkMode=!darkMode;localStorage.setItem('darkMode',darkMode);applyMode();}
+function applyMode(){if(darkMode){document.body.classList.remove('light-mode');}else{document.body.classList.add('light-mode');}}
+
+// تبديل اللغة
+function toggleLanguage(){lang=(lang==='ar')?'en':'ar';localStorage.setItem('lang',lang);applyLanguage();}
+function applyLanguage(){
+  if(lang==='ar'){
+    document.getElementById('welcomeText').innerHTML=`مرحبا <span id="userDisplay">${username}</span>!`;
+    document.getElementById('balanceText').innerHTML=`رصيدك الحالي: <span id="balance">${balances[username].toFixed(2)}</span> DRAGON COIN`;
+    document.getElementById('dailyBtn').textContent='💰 هدية يومية عشوائية';
+    document.getElementById('transferBtn').textContent='💸 تحويل عملة';
+    document.getElementById('storeBtn').textContent='🏪 متجر';
+  } else {
+    document.getElementById('welcomeText').innerHTML=`Welcome <span id="userDisplay">${username}</span>!`;
+    document.getElementById('balanceText').innerHTML=`Balance: <span id="balance">${balances[username].toFixed(2)}</span> DRAGON COIN`;
+    document.getElementById('dailyBtn').textContent='💰 Daily Random Gift';
+    document.getElementById('transferBtn').textContent='💸 Transfer Coins';
+    document.getElementById('storeBtn').textContent='🏪 Store';
+  }
+}
+
+// التحقق من الروبوت
+let captchaCorrectAnswer = 8; // 5+3
+function verifyCaptcha(){
+  const ans = parseInt(document.getElementById('captchaAnswer').value);
+  if(ans === captchaCorrectAnswer){
+    document.getElementById('captchaOverlay').style.display='none';
+  } else {
+    alert('❌ الإجابة غير صحيحة حاول مرة أخرى!');
+  }
+}
+</script>
+</body>
+</html>
