@@ -1,0 +1,3095 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أكاديمية Discord.js - منصة تعليمية عربية شاملة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5865F2;
+            --primary-dark: #4752c4;
+            --secondary-color: #404EED;
+            --dark-color: #23272A;
+            --light-color: #f4f4f4;
+            --text-dark: #2c2c2c;
+            --text-light: #ffffff;
+            --success-color: #57F287;
+            --warning-color: #FEE75C;
+            --danger-color: #ED4245;
+            --info-color: #5865F2;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            --box-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #f0f0f0;
+            --text-muted: #aaa;
+            --border-color: #333;
+            --sidebar-bg: #252525;
+            --header-bg: #1a1a1a;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #2c2c2c;
+            --text-muted: #666;
+            --border-color: #e0e0e0;
+            --sidebar-bg: #f5f5f5;
+            --header-bg: #2c2c2c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--header-bg);
+            color: var(--text-light);
+            padding: 1rem 0;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-icon {
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        nav a.active {
+            background-color: var(--primary-color);
+        }
+
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 10px 15px;
+            border-radius: 30px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            width: 200px;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            width: 250px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--gradient);
+            color: var(--text-light);
+            padding: 5rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23ffffff" opacity="0.1"><polygon points="1000,100 1000,0 0,100"></polygon></svg>');
+            background-size: cover;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            padding: 14px 30px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: bold;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .cta-button.secondary {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 2px solid var(--text-light);
+        }
+
+        .cta-button.secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            gap: 25px;
+            padding: 3rem 0;
+        }
+
+        .sidebar {
+            flex: 0 0 320px;
+            background-color: var(--sidebar-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .sidebar-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: rgba(88, 101, 242, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .sidebar-menu a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .progress-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .progress-percentage {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: var(--border-color);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+            transition: width 0.8s ease;
+            border-radius: 5px;
+        }
+
+        .achievements {
+            margin-top: 2rem;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-sm);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .achievement-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .achievement.gold .achievement-icon {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+
+        .achievement.silver .achievement-icon {
+            background: linear-gradient(135deg, #C0C0C0, #A9A9A9);
+        }
+
+        .achievement.bronze .achievement-icon {
+            background: linear-gradient(135deg, #CD7F32, #8B4513);
+        }
+
+        .achievement-info h4 {
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+        }
+
+        .achievement-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .section-title {
+            margin-bottom: 2rem;
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        /* Courses Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 3rem;
+        }
+
+        .course-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .course-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--gradient);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .course-image {
+            height: 180px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .course-content {
+            padding: 1.8rem;
+        }
+
+        .course-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        .course-description {
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+            line-height: 1.7;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+        }
+
+        .course-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .progress-bar-sm {
+            height: 6px;
+            background-color: var(--border-color);
+            border-radius: 3px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .progress-sm {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Lesson Content */
+        .lesson-container {
+            display: none;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .lesson-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            font-weight: 800;
+        }
+
+        .lesson-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .lesson-badge {
+            background: var(--gradient);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .lesson-content {
+            margin-bottom: 2rem;
+        }
+
+        .lesson-text {
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .lesson-text h3 {
+            margin: 1.8rem 0 0.8rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .lesson-text ul, .lesson-text ol {
+            margin: 1.2rem 0 1.2rem 1.8rem;
+        }
+
+        .lesson-text li {
+            margin-bottom: 0.7rem;
+            position: relative;
+        }
+
+        .lesson-text ul li::before {
+            content: '•';
+            color: var(--primary-color);
+            font-weight: bold;
+            position: absolute;
+            right: -1.2rem;
+        }
+
+        .code-block {
+            background-color: #1e1e1e;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin: 2rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .copy-code {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .copy-code:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .code-editor {
+            background-color: #1e1e1e;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin: 2rem 0;
+            box-shadow: var(--box-shadow);
+        }
+
+        .editor-header {
+            background-color: #2d2d2d;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+        }
+
+        .editor-title {
+            color: #ccc;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .editor-actions button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+            font-size: 0.8rem;
+        }
+
+        .editor-actions button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .editor-content {
+            padding: 1.5rem;
+            min-height: 250px;
+            font-family: 'Courier New', monospace;
+            color: #f8f8f2;
+            outline: none;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .output-container {
+            background-color: #1e1e1e;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1rem;
+            min-height: 120px;
+            font-family: 'Courier New', monospace;
+            color: #f8f8f2;
+            border-top: 1px solid #444;
+        }
+
+        .video-container {
+            margin: 2.5rem 0;
+            text-align: center;
+        }
+
+        .video-placeholder {
+            background: linear-gradient(135deg, #1e1e1e, #2d2d2d);
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .video-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%235865F2" opacity="0.1"><circle cx="50" cy="50" r="40"></circle></svg>');
+            background-size: cover;
+        }
+
+        .watch-video-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+        }
+
+        .watch-video-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .lesson-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .nav-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .nav-btn:disabled {
+            background: var(--border-color);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Tests Section */
+        .tests-container {
+            display: none;
+        }
+
+        .tests-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .tests-filter {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .tests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 3rem;
+        }
+
+        .test-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .test-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .test-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        .test-description {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .test-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .test-questions-container {
+            display: none;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .test-title-large {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: 800;
+        }
+
+        .test-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .test-timer {
+            background: var(--gradient);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+
+        .question {
+            margin-bottom: 2.5rem;
+            padding: 1.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: var(--bg-color);
+            transition: var(--transition);
+        }
+
+        .question:hover {
+            border-color: var(--primary-color);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .question-points {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            background: var(--card-bg);
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .option:hover {
+            background-color: rgba(88, 101, 242, 0.05);
+            border-color: var(--primary-color);
+        }
+
+        .option.selected {
+            background-color: rgba(88, 101, 242, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .option-label {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+            display: block;
+            margin: 2rem auto 0;
+            font-size: 1.1rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 800;
+        }
+
+        .result-score {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .result-feedback {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .result-details {
+            text-align: right;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: var(--bg-color);
+            border-radius: var(--border-radius);
+        }
+
+        .result-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--bg-color);
+            border-radius: var(--border-radius);
+            min-width: 150px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            box-shadow: var(--box-shadow);
+        }
+
+        .restart-btn {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .review-btn {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        /* Resources Section */
+        .resources-container {
+            display: none;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .resource-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            text-align: center;
+            border: 2px solid transparent;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .resource-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .resource-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .resource-description {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .resource-link {
+            display: inline-block;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 15px;
+            border: 1px solid var(--primary-color);
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+        }
+
+        .resource-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--header-bg);
+            color: var(--text-light);
+            padding: 3rem 0 1.5rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .footer-main {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition);
+            opacity: 0.8;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                position: static;
+                margin-bottom: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .search-input {
+                width: 150px;
+            }
+
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .lesson-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .tests-grid, .resources-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <span class="logo-icon">🤖</span>
+                <h1>أكاديمية Discord.js</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-target="home">الرئيسية</a></li>
+                    <li><a href="#" class="nav-link" data-target="courses">الدروس</a></li>
+                    <li><a href="#" class="nav-link" data-target="tests">الاختبارات</a></li>
+                    <li><a href="#" class="nav-link" data-target="resources">المصادر</a></li>
+                    <li><a href="#">المدونة</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="ابحث في الدروس...">
+                </div>
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+                <div class="user-profile">
+                    <div class="avatar">م</div>
+                    <span>مستخدم</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <h2>أتقن برمجة بوتات Discord من الصفر للإحتراف</h2>
+            <p>منصة تعليمية عربية شاملة تجمع بين الشروحات المكتوبة، الفيديوهات التفاعلية، والأمثلة العملية لتأهيلك لسوق العمل</p>
+            <div class="cta-buttons">
+                <a href="#" class="cta-button nav-link" data-target="courses">ابدأ التعلم الآن</a>
+                <a href="#" class="cta-button secondary nav-link" data-target="tests">اختبر معرفتك</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="main-content">
+            <aside class="sidebar">
+                <h3 class="sidebar-title">الدروس التعليمية</h3>
+                <ul class="sidebar-menu" id="lessons-menu">
+                    <!-- سيتم ملؤه بالجافاسكريبت -->
+                </ul>
+                
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <div class="progress-title">تقدمك في المسار</div>
+                        <div class="progress-percentage" id="progress-percentage">35%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" id="overall-progress" style="width: 35%"></div>
+                    </div>
+                    <div class="progress-text">10/10 دروس مكتملة</div>
+                </div>
+                
+                <div class="achievements">
+                    <h3 class="sidebar-title">الإنجازات</h3>
+                    <div class="achievement gold">
+                        <div class="achievement-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="achievement-info">
+                            <h4>أول بوت لك</h4>
+                            <p>أنشأت أول بوت Discord</p>
+                        </div>
+                    </div>
+                    <div class="achievement silver">
+                        <div class="achievement-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="achievement-info">
+                            <h4>مبرمج مبتدئ</h4>
+                            <p>أكملت 5 دروس بنجاح</p>
+                        </div>
+                    </div>
+                    <div class="achievement bronze">
+                        <div class="achievement-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="achievement-info">
+                            <h4>قارئ نهم</h4>
+                            <p>اطلعت على جميع المصادر</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="content">
+                <section id="home" class="content-section">
+                    <h2 class="section-title">دروس برمجة بوتات Discord.js</h2>
+                    <div class="courses-grid" id="courses-container">
+                        <!-- سيتم ملؤه بالجافاسكريبت -->
+                    </div>
+                </section>
+
+                <section id="lesson-content" class="lesson-container">
+                    <!-- سيتم ملؤه بالجافاسكريبت -->
+                </section>
+
+                <section id="tests" class="tests-container">
+                    <div class="tests-header">
+                        <h2 class="section-title">اختبارات قياس الفهم</h2>
+                        <div class="tests-filter">
+                            <button class="filter-btn active" data-filter="all">الكل</button>
+                            <button class="filter-btn" data-filter="lesson">اختبارات الدروس</button>
+                            <button class="filter-btn" data-filter="comprehensive">اختبارات شاملة</button>
+                        </div>
+                    </div>
+                    <div class="tests-grid" id="tests-container">
+                        <!-- سيتم ملؤه بالجافاسكريبت -->
+                    </div>
+                    <div class="test-questions-container" id="test-questions-container">
+                        <!-- سيتم ملؤه بالجافاسكريبت -->
+                    </div>
+                </section>
+
+                <section id="resources" class="resources-container">
+                    <h2 class="section-title">مصادر تعليمية إضافية</h2>
+                    <div class="resources-grid">
+                        <div class="resource-card">
+                            <div class="resource-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h3 class="resource-title">الوثائق الرسمية</h3>
+                            <p class="resource-description">المرجع الشامل لجميع دوال Discord.js مع أمثلة تفصيلية</p>
+                            <a href="#" class="resource-link">استعرض الوثائق</a>
+                        </div>
+                        <div class="resource-card">
+                            <div class="resource-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h3 class="resource-title">فيديوهات تعليمية</h3>
+                            <p class="resource-description">مجموعة فيديوهات لشرح مفاهيم متقدمة وتطبيقات عملية</p>
+                            <a href="#" class="resource-link">شاهد الفيديوهات</a>
+                        </div>
+                        <div class="resource-card">
+                            <div class="resource-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h3 class="resource-title">مشاريع جاهزة</h3>
+                            <p class="resource-description">أمثلة عملية لمشاريع بوتات متكاملة مع شروحات مفصلة</p>
+                            <a href="#" class="resource-link">استكشف المشاريع</a>
+                        </div>
+                        <div class="resource-card">
+                            <div class="resource-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3 class="resource-title">مجتمع الدعم</h3>
+                            <p class="resource-description">انضم لمجتمع المبرمجين العرب للدعم وتبادل الخبرات</p>
+                            <a href="#" class="resource-link">انضم الآن</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-main">
+                <div class="footer-column">
+                    <h3>أكاديمية Discord.js</h3>
+                    <p>منصة تعليمية عربية تهدف إلى تمكين المبرمجين العرب من إنشاء بوتات Discord متقدمة باستخدام Discord.js</p>
+                </div>
+                <div class="footer-column">
+                    <h3>روابط سريعة</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">الرئيسية</a></li>
+                        <li><a href="#">الدروس</a></li>
+                        <li><a href="#">الاختبارات</a></li>
+                        <li><a href="#">المصادر</a></li>
+                        <li><a href="#">المدونة</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>الدروس</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">مقدمة في Discord.js</a></li>
+                        <li><a href="#">الأوامر الأساسية</a></li>
+                        <li><a href="#">التفاعلات المتقدمة</a></li>
+                        <li><a href="#">قواعد البيانات</a></li>
+                        <li><a href="#">نشر البوت</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>اتصل بنا</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">البريد الإلكتروني</a></li>
+                        <li><a href="#">مجتمع الديسكورد</a></li>
+                        <li><a href="#">تويتر</a></li>
+                        <li><a href="#">يوتيوب</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="copyright">
+                    &copy; 2023 أكاديمية Discord.js. جميع الحقوق محفوظة.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // بيانات الدروس (10 دروس كاملة)
+        const lessons = [
+            {
+                id: 1,
+                title: "مقدمة عن Discord.js",
+                description: "تعرف على Discord.js وكيفية استخدامه لبرمجة بوتات Discord متقدمة",
+                duration: "30 دقيقة",
+                examples: 5,
+                level: "مبتدئ",
+                content: `
+                    <h3>ما هو Discord.js؟</h3>
+                    <p>Discord.js هي مكتبة JavaScript قوية تتيح لك التفاعل مع واجهة برمجة تطبيقات Discord. باستخدام Discord.js، يمكنك إنشاء بوتات Discord متقدمة يمكنها إدارة الخوادم، الرد على الأوامر، إرسال الرسائل، وغيرها الكثير.</p>
+                    
+                    <h3>لماذا نستخدم Discord.js؟</h3>
+                    <ul>
+                        <li>سهلة التعلم والاستخدام</li>
+                        <li>مستندة على JavaScript/Node.js</li>
+                        <li>مكتبة نشطة ومحدثة باستمرار</li>
+                        <li>تدعم جميع ميزات Discord الحديثة</li>
+                        <li>مجتمع دعم كبير ونشط</li>
+                    </ul>
+                    
+                    <h3>المفاهيم الأساسية</h3>
+                    <p>قبل البدء، يجب أن تفهم بعض المفاهيم الأساسية:</p>
+                    <ol>
+                        <li><strong>العميل (Client)</strong>: يمثل اتصال البوت بـ Discord</li>
+                        <li><strong>الأحداث (Events)</strong>: تحدث عند حدوث شيء ما (مثل رسالة جديدة)</li>
+                        <li><strong>الأوامر (Commands)</strong>: تعليمات ينفذها البوت</li>
+                        <li><strong>الخوادم (Guilds)</strong>: سيرفرات Discord التي ينضم إليها البوت</li>
+                    </ol>
+                `,
+                code: `
+// مثال على كود بسيط باستخدام Discord.js
+const { Client, GatewayIntentBits } = require('discord.js');
+
+// إنشاء عميل جديد
+const client = new Client({ 
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
+    ] 
+});
+
+// حدث عندما يصبح البوت جاهزًا
+client.on('ready', () => {
+    console.log(\`تم تسجيل الدخول كـ \${client.user.tag}!\`);
+});
+
+// حدث عند استلام رسالة جديدة
+client.on('messageCreate', message => {
+    // تجنب الرد على الرسائل المرسلة من البوت نفسه
+    if (message.author.bot) return;
+    
+    // الرد على أمر !ping
+    if (message.content === '!ping') {
+        message.reply('Pong!');
+    }
+});
+
+// تسجيل الدخول باستخدام التوكن
+client.login('TOKEN_HERE');
+                `,
+                videoUrl: "https://www.youtube.com/embed/example1"
+            },
+            {
+                id: 2,
+                title: "تثبيت Node.js و VS Code",
+                description: "تعلم كيفية تثبيت الأدوات الأساسية لبدء برمجة البوتات",
+                duration: "25 دقيقة",
+                examples: 4,
+                level: "مبتدئ",
+                content: `
+                    <h3>تثبيت Node.js</h3>
+                    <p>Node.js هو بيئة تشغيل JavaScript خارج المتصفح، وهو ضروري لتشغيل Discord.js.</p>
+                    <ol>
+                        <li>اذهب إلى <a href="https://nodejs.org" target="_blank">موقع Node.js الرسمي</a></li>
+                        <li>قم بتنزيل الإصدار LTS (المستقر)</li>
+                        <li>شغل الملف الذي تم تنزيله واتبع خطوات التثبيت</li>
+                        <li>افتح موجه الأوامر واكتب <code>node --version</code> للتأكد من التثبيت</li>
+                    </ol>
+                    
+                    <h3>تثبيت VS Code</h3>
+                    <p>VS Code هو محرر نصوص متطور وسهل الاستخدام.</p>
+                    <ol>
+                        <li>اذهب إلى <a href="https://code.visualstudio.com" target="_blank">موقع VS Code الرسمي</a></li>
+                        <li>قم بتنزيل الإصدار المناسب لنظام التشغيل الخاص بك</li>
+                        <li>شغل الملف واتبع خطوات التثبيت</li>
+                    </ol>
+                    
+                    <h3>تهيئة المشروع</h3>
+                    <p>بعد تثبيت الأدوات، حان الوقت لتهيئة مشروعك الأول:</p>
+                `,
+                code: `
+// افتح موجه الأوامر في المجلد الذي تريد العمل فيه
+
+// إنشاء مجلد جديد للمشروع
+mkdir my-discord-bot
+cd my-discord-bot
+
+// تهيئة مشروع Node.js جديد
+npm init -y
+
+// تثبيت Discord.js
+npm install discord.js
+
+// إنشاء ملف index.js
+// والصق الكود الأساسي للبوت
+                `,
+                videoUrl: "https://www.youtube.com/embed/example2"
+            },
+            {
+                id: 3,
+                title: "إعداد البوت وتشغيله",
+                description: "إنشاء أول بوت خاص بك وتشغيله على Discord",
+                duration: "35 دقيقة",
+                examples: 6,
+                level: "مبتدئ",
+                content: `
+                    <h3>إنشاء تطبيق Discord</h3>
+                    <ol>
+                        <li>اذهب إلى <a href="https://discord.com/developers/applications" target="_blank">بوابة مطوري Discord</a></li>
+                        <li>انقر على "New Application" وأعطِ تطبيقك اسمًا</li>
+                        <li>من القائمة الجانبية، انقر على "Bot"</li>
+                        <li>انقر على "Add Bot" وتأكيد الإجراء</li>
+                        <li>انسخ التوكن (Token) واحفظه في مكان آمن</li>
+                    </ol>
+                    
+                    <h3>إضافة البوت إلى السيرفر</h3>
+                    <ol>
+                        <li>من صفحة البوت، انقر على "OAuth2" ثم "URL Generator"</li>
+                        <li>اختر "bot" من Scopes</li>
+                        <li>اختر الصلاحيات التي يحتاجها البوت (مثل Send Messages, Read Messages)</li>
+                        <li>انسخ الرابط المولد وافتحه في المتصفح</li>
+                        <li>اختر السيرفر الذي تريد إضافة البوت إليه</li>
+                    </ol>
+                    
+                    <h3>تشغيل البوت</h3>
+                    <p>الآن أصبح البوت جاهزًا للتشغيل. استخدم الكود التالي:</p>
+                `,
+                code: `
+// كود أساسي لتشغيل البوت
+const { Client, GatewayIntentBits } = require('discord.js');
+
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers
+    ]
+});
+
+client.once('ready', () => {
+    console.log('البوت يعمل!');
+    console.log(\`اسم البوت: \${client.user.tag}\`);
+    console.log(\`عدد السيرفرات: \${client.guilds.cache.size}\`);
+});
+
+// حدث دخول عضو جديد
+client.on('guildMemberAdd', member => {
+    const channel = member.guild.channels.cache.find(ch => ch.name === 'عام');
+    if (channel) {
+        channel.send(\`مرحباً \${member} في السيرفر!\`);
+    }
+});
+
+// استبدل 'YOUR_TOKEN_HERE' بالتوكن الخاص بك
+client.login('YOUR_TOKEN_HERE');
+                `,
+                videoUrl: "https://www.youtube.com/embed/example3"
+            },
+            {
+                id: 4,
+                title: "أوامر بسيطة (Ping, Help...)",
+                description: "إنشاء أوامر بسيطة للبوت مثل Ping و Help",
+                duration: "40 دقيقة",
+                examples: 8,
+                level: "مبتدئ",
+                content: `
+                    <h3>إنشاء أول أمر للبوت</h3>
+                    <p>الآن سنتعلم كيفية إنشاء أوامر بسيطة للبوت مثل Ping و Help.</p>
+                    
+                    <h3>هيكل الأمر الأساسي</h3>
+                    <p>عادةً ما يكون للأمر البسيط الهيكل التالي:</p>
+                    <ol>
+                        <li>التحقق من محتوى الرسالة</li>
+                        <li>تنفيذ الإجراء المطلوب</li>
+                        <li>إرسال الرد</li>
+                    </ol>
+                    
+                    <h3>أمثلة على الأوامر</h3>
+                    <p>فيما يلي بعض الأمثلة على الأوامر البسيطة:</p>
+                `,
+                code: `
+client.on('messageCreate', message => {
+    // تجاهل الرسائل من البوتات الأخرى
+    if (message.author.bot) return;
+    
+    // أمر البنغ
+    if (message.content === '!ping') {
+        message.reply('Pong! 🏓');
+    }
+    
+    // أمر المساعدة
+    if (message.content === '!help') {
+        const helpEmbed = {
+            color: 0x0099ff,
+            title: 'قائمة الأوامر',
+            fields: [
+                {
+                    name: '!ping',
+                    value: 'للتحقق من استجابة البوت',
+                },
+                {
+                    name: '!help',
+                    value: 'لعرض هذه القائمة',
+                },
+                {
+                    name: '!user',
+                    value: 'لمعلومات المستخدم',
+                },
+            ],
+            timestamp: new Date(),
+        };
+        
+        message.channel.send({ embeds: [helpEmbed] });
+    }
+    
+    // أمر معلومات المستخدم
+    if (message.content === '!user') {
+        message.channel.send(\`اسمك: \${message.author.username}\nايديك: \${message.author.id}\`);
+    }
+});
+                `,
+                videoUrl: "https://www.youtube.com/embed/example4"
+            },
+            {
+                id: 5,
+                title: "تفاعلات الأزرار والمنيوهات",
+                description: "إضافة أزرار تفاعلية وقوائم منسدلة للبوت",
+                duration: "45 دقيقة",
+                examples: 7,
+                level: "متوسط",
+                content: `
+                    <h3>مقدمة في المكونات التفاعلية</h3>
+                    <p>تسمح المكونات التفاعلية (الأزرار، القوائم المنسدلة) بإنشاء واجهات مستخدم تفاعلية داخل Discord.</p>
+                    
+                    <h3>أنواع المكونات التفاعلية</h3>
+                    <ul>
+                        <li><strong>الأزرار (Buttons)</strong>: أزرار يمكن النقر عليها</li>
+                        <li><strong>القوائم المنسدلة (Select Menus)</strong>: قوائم تسمح باختيار خيارات</li>
+                        <li><strong>أشرطة الإجراءات (Action Rows)</strong>: حاويات للمكونات التفاعلية</li>
+                    </ul>
+                    
+                    <h3>إنشاء أزرار تفاعلية</h3>
+                    <p>فيما يلي مثال على إنشاء أزرار تفاعلية:</p>
+                `,
+                code: `
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+
+client.on('messageCreate', message => {
+    if (message.content === '!buttons') {
+        const row = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('primary')
+                    .setLabel('زر أساسي')
+                    .setStyle(ButtonStyle.Primary),
+                new ButtonBuilder()
+                    .setCustomId('success')
+                    .setLabel('نجاح')
+                    .setStyle(ButtonStyle.Success),
+                new ButtonBuilder()
+                    .setCustomId('danger')
+                    .setLabel('خطر')
+                    .setStyle(ButtonStyle.Danger),
+            );
+        
+        message.channel.send({
+            content: 'اختر زرًا:',
+            components: [row],
+        });
+    }
+});
+
+// التعامل مع النقر على الأزرار
+client.on('interactionCreate', interaction => {
+    if (!interaction.isButton()) return;
+    
+    if (interaction.customId === 'primary') {
+        interaction.reply({ content: 'نقرت على الزر الأساسي!', ephemeral: true });
+    } else if (interaction.customId === 'success') {
+        interaction.reply({ content: 'نقرت على زر النجاح!', ephemeral: true });
+    } else if (interaction.customId === 'danger') {
+        interaction.reply({ content: 'نقرت على زر الخطر!', ephemeral: true });
+    }
+});
+                `,
+                videoUrl: "https://www.youtube.com/embed/example5"
+            },
+            {
+                id: 6,
+                title: "أوامر سلاش متقدمة",
+                description: "استخدام أوامر Slash الحديثة في Discord",
+                duration: "50 دقيقة",
+                examples: 9,
+                level: "متوسط",
+                content: `
+                    <h3>مقدمة في أوامر Slash</h3>
+                    <p>أوامر Slash هي نوع جديد من الأوامر في Discord تظهر عند كتابة / في شريط الرسائل. وهي أكثر تفاعلية وسهولة في الاستخدام.</p>
+                    
+                    <h3>مميزات أوامر Slash</h3>
+                    <ul>
+                        <li>سهلة الاكتشاف والاستخدام</li>
+                        <li>تدعم الإكمال التلقائي</li>
+                        <li>تقدم تجربة مستخدم أفضل</li>
+                        <li>مطلوبة للأوامر العامة</li>
+                    </ul>
+                    
+                    <h3>إنشاء أول أمر Slash</h3>
+                    <p>فيما يلي مثال على إنشاء أمر Slash بسيط:</p>
+                `,
+                code: `
+const { REST, Routes, SlashCommandBuilder } = require('discord.js');
+
+// إنشاء أمر Slash
+const commands = [
+    new SlashCommandBuilder()
+        .setName('ping')
+        .setDescription('يرد بـ Pong!'),
+    new SlashCommandBuilder()
+        .setName('user')
+        .setDescription('معلومات عن المستخدم'),
+].map(command => command.toJSON());
+
+// تسجيل الأوامر
+const rest = new REST({ version: '10' }).setToken('TOKEN_HERE');
+
+(async () => {
+    try {
+        console.log('بدأ تسجيل أوامر Slash...');
+        
+        await rest.put(
+            Routes.applicationCommands('CLIENT_ID_HERE'),
+            { body: commands },
+        );
+        
+        console.log('تم تسجيل أوامر Slash بنجاح!');
+    } catch (error) {
+        console.error(error);
+    }
+})();
+
+// التعامل مع أوامر Slash
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isChatInputCommand()) return;
+    
+    if (interaction.commandName === 'ping') {
+        await interaction.reply('Pong!');
+    } else if (interaction.commandName === 'user') {
+        await interaction.reply(\`اسم المستخدم: \${interaction.user.username}\nID: \${interaction.user.id}\`);
+    }
+});
+                `,
+                videoUrl: "https://www.youtube.com/embed/example6"
+            },
+            {
+                id: 7,
+                title: "التعامل مع الأحداث (Events)",
+                description: "الاستجابة للأحداث المختلفة في Discord مثل الرسائل الجديدة",
+                duration: "55 دقيقة",
+                examples: 10,
+                level: "متوسط",
+                content: `
+                    <h3>مقدمة في الأحداث</h3>
+                    <p>الأحداث في Discord.js هي إشارات يتم إطلاقها عندما يحدث شيء معين في Discord، مثل وصول رسالة جديدة أو انضمام عضو إلى السيرفر.</p>
+                    
+                    <h3>أنواع الأحداث الشائعة</h3>
+                    <ul>
+                        <li><strong>ready</strong>: عندما يصبح البوت جاهزًا</li>
+                        <li><strong>messageCreate</strong>: عندما يتم إرسال رسالة جديدة</li>
+                        <li><strong>guildMemberAdd</strong>: عندما ينضم عضو جديد إلى السيرفر</li>
+                        <li><strong>interactionCreate</strong>: عندما يقوم المستخدم بتفاعل (زر، قائمة، إلخ)</li>
+                    </ul>
+                    
+                    <h3>أمثلة على استخدام الأحداث</h3>
+                    <p>فيما يلي بعض الأمثلة على استخدام الأحداث:</p>
+                `,
+                code: `
+// حدث عندما يصبح البوت جاهزًا
+client.once('ready', () => {
+    console.log('البوت يعمل بنجاح!');
+    
+    // تعيين حالة البوت
+    client.user.setActivity('أطور بوتات رائعة!', { type: 'PLAYING' });
+});
+
+// حدث عند إرسال رسالة جديدة
+client.on('messageCreate', message => {
+    // تجاهل الرسائل من البوتات الأخرى
+    if (message.author.bot) return;
+    
+    // الرد على رسالة تحتوي على كلمة "مرحبا"
+    if (message.content.includes('مرحبا')) {
+        message.reply('مرحبا بك! كيف يمكنني مساعدتك؟');
+    }
+});
+
+// حدث عند انضمام عضو جديد
+client.on('guildMemberAdd', member => {
+    // إرسال رسالة ترحيب
+    const channel = member.guild.channels.cache.find(ch => ch.name === 'الترحيب');
+    if (channel) {
+        channel.send(\`🎉 أهلًا وسهلًا بيك \${member} في السيرفر!\`);
+    }
+    
+    // إضافة رتبة تلقائية
+    const role = member.guild.roles.cache.find(role => role.name === 'أعضاء');
+    if (role) {
+        member.roles.add(role);
+    }
+});
+
+// حدث عند مغادرة عضو
+client.on('guildMemberRemove', member => {
+    const channel = member.guild.channels.cache.find(ch => ch.name === 'الترحيب');
+    if (channel) {
+        channel.send(\`وداعاً \${member.user.username}!
+نأسف لرؤيتك تغادر 😢\`);
+    }
+});
+                `,
+                videoUrl: "https://www.youtube.com/embed/example7"
+            },
+            {
+                id: 8,
+                title: "قواعد البيانات (JSON و MongoDB)",
+                description: "تعلم كيفية تخزين البيانات باستخدام JSON و MongoDB",
+                duration: "60 دقيقة",
+                examples: 12,
+                level: "متقدم",
+                content: `
+                    <h3>مقدمة في قواعد البيانات</h3>
+                    <p>قواعد البيانات تسمح للبوت بتخزين المعلومات واسترجاعها، مثل بيانات المستخدمين، الإعدادات، والإحصائيات.</p>
+                    
+                    <h3>أنواع قواعد البيانات</h3>
+                    <ul>
+                        <li><strong>JSON</strong>: مناسب للمشاريع الصغيرة والبسيطة</li>
+                        <li><strong>MongoDB</strong>: قاعدة بيانات NoSQL قابلة للتطوير</li>
+                        <li><strong>SQLite</strong>: قاعدة بيانات خفيفة وسهلة الاستخدام</li>
+                    </ul>
+                    
+                    <h3>استخدام JSON لتخزين البيانات</h3>
+                    <p>فيما يلي مثال على استخدام JSON لتخزين بيانات المستخدمين:</p>
+                `,
+                code: `
+const fs = require('fs');
+
+// قراءة البيانات من ملف JSON
+function readData() {
+    try {
+        const data = fs.readFileSync('data.json', 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        return {};
+    }
+}
+
+// كتابة البيانات إلى ملف JSON
+function writeData(data) {
+    fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
+}
+
+// تخزين بيانات المستخدم
+client.on('messageCreate', message => {
+    if (message.author.bot) return;
+    
+    const userId = message.author.id;
+    const data = readData();
+    
+    // تهيئة بيانات المستخدم إذا لم تكن موجودة
+    if (!data[userId]) {
+        data[userId] = {
+            messages: 0,
+            level: 1,
+            xp: 0
+        };
+    }
+    
+    // زيادة عدد الرسائل
+    data[userId].messages += 1;
+    
+    // زيادة الخبرة
+    data[userId].xp += 5;
+    
+    // التحقق من الترقية
+    if (data[userId].xp >= data[userId].level * 100) {
+        data[userId].level += 1;
+        data[userId].xp = 0;
+        message.channel.send(\`مبروك \${message.author}! لقد ارتقت إلى المستوى \${data[userId].level}!\`);
+    }
+    
+    // حفظ البيانات
+    writeData(data);
+    
+    // عرض الإحصائيات
+    if (message.content === '!stats') {
+        const userData = data[userId];
+        message.channel.send(\`إحصائياتك:
+الرسائل: \${userData.messages}
+المستوى: \${userData.level}
+الخبرة: \${userData.xp}/\${userData.level * 100}\`);
+    }
+});
+                `,
+                videoUrl: "https://www.youtube.com/embed/example8"
+            },
+            {
+                id: 9,
+                title: "أنظمة متقدمة (عملات، تذاكر، ألعاب)",
+                description: "بناء أنظمة متقدمة مثل نظام العملات، التذاكر، والألعاب",
+                duration: "70 دقيقة",
+                examples: 15,
+                level: "متقدم",
+                content: `
+                    <h3>أنظمة البوتات المتقدمة</h3>
+                    <p>يمكن للبوتات تنفيذ أنظمة معقدة تضيف قيمة كبيرة للسيرفرات، مثل أنظمة الاقتصاد، التذاكر، والألعاب.</p>
+                    
+                    <h3>أنواع الأنظمة المتقدمة</h3>
+                    <ul>
+                        <li><strong>نظام الاقتصاد</strong>: عملات افتراضية، متاجر، ومكافآت</li>
+                        <li><strong>نظام التذاكر</strong>: إنشاء قنوات دعم خاصة</li>
+                        <li><strong>نظام الألعاب</strong>: ألعاب تفاعلية داخل الديسكورد</li>
+                        <li><strong>نظام التسجيلات</strong>: تسجيل الأعضاء وتخصيص رتب</li>
+                    </ul>
+                    
+                    <h3>بناء نظام اقتصادي بسيط</h3>
+                    <p>فيما يلي مثال على بناء نظام اقتصادي بسيط:</p>
+                `,
+                code: `
+const economy = require('./economy.json');
+
+// أمر لرصيد المستخدم
+client.on('messageCreate', message => {
+    if (message.author.bot) return;
+    
+    if (message.content === '!balance') {
+        const userId = message.author.id;
+        const userBalance = economy[userId] || 0;
+        message.channel.send(\`رصيدك: \${userBalance} عملة\`);
+    }
+    
+    // أمر العمل اليومي
+    if (message.content === '!daily') {
+        const userId = message.author.id;
+        const lastDaily = economy[\`\${userId}_lastDaily\`];
+        const now = Date.now();
+        const oneDay = 24 * 60 * 60 * 1000;
+        
+        if (lastDaily && (now - lastDaily) < oneDay) {
+            const nextDaily = new Date(lastDaily + oneDay);
+            message.channel.send(\`لقد حصلت بالفعل على مكافأتك اليومية! العودة \${nextDaily.toLocaleTimeString()}\`);
+            return;
+        }
+        
+        // منح المكافأة
+        economy[userId] = (economy[userId] || 0) + 100;
+        economy[\`\${userId}_lastDaily\`] = now;
+        
+        // حفظ البيانات
+        fs.writeFileSync('./economy.json', JSON.stringify(economy, null, 2));
+        
+        message.channel.send('🎉 لقد حصلت على 100 عملة كمكافأة يومية!');
+    }
+    
+    // أمر التحويل
+    if (message.content.startsWith('!transfer')) {
+        const args = message.content.split(' ');
+        if (args.length !== 3) {
+            message.channel.send('استخدم: !transfer <@مستخدم> <المبلغ>');
+            return;
+        }
+        
+        const target = message.mentions.users.first();
+        const amount = parseInt(args[2]);
+        
+        if (!target || isNaN(amount) || amount <= 0) {
+            message.channel.send('الرجاء تحديد مستخدم ومبلغ صحيح');
+            return;
+        }
+        
+        const senderId = message.author.id;
+        const targetId = target.id;
+        
+        if (economy[senderId] < amount) {
+            message.channel.send('ليس لديك رصيد كافي للتحويل');
+            return;
+        }
+        
+        // إجراء التحويل
+        economy[senderId] -= amount;
+        economy[targetId] = (economy[targetId] || 0) + amount;
+        
+        // حفظ البيانات
+        fs.writeFileSync('./economy.json', JSON.stringify(economy, null, 2));
+        
+        message.channel.send(\`✅ تم تحويل \${amount} عملة إلى \${target.username}\`);
+    }
+});
+                `,
+                videoUrl: "https://www.youtube.com/embed/example9"
+            },
+            {
+                id: 10,
+                title: "نشر البوت وتشغيله 24/7",
+                description: "تعلم كيفية نشر البوت على خوادم خارجية لتشغيله 24/7",
+                duration: "45 دقيقة",
+                examples: 6,
+                level: "متقدم",
+                content: `
+                    <h3>نشر البوت على الإنترنت</h3>
+                    <p>لجعل البوت يعمل 24/7، تحتاج إلى نشره على خادم سحابي بدلاً من تشغيله على جهازك الشخصي.</p>
+                    
+                    <h3>منصات النشر المناسبة</h3>
+                    <ul>
+                        <li><strong>Heroku</strong>: سهل الاستخدام مع خطة مجانية</li>
+                        <li><strong>Railway</strong>: بديل حديث لـ Heroku</li>
+                        <li><strong>Replit</strong>: بيئة تطوير متكاملة مع نشر مجاني</li>
+                        <li><strong>خوادم VPS</strong>: تحكم كامل ولكن يتطلب إدارة</li>
+                    </ul>
+                    
+                    <h3>نشر البوت على Heroku</h3>
+                    <p>فيما يلي خطوات نشر البوت على Heroku:</p>
+                    <ol>
+                        <li>إنشاء حساب على <a href="https://heroku.com" target="_blank">Heroku</a></li>
+                        <li>تثبيت Heroku CLI على جهازك</li>
+                        <li>إنشاء تطبيق جديد في لوحة تحكم Heroku</li>
+                        <li>إعداد ملفات المشروع (Procfile, package.json)</li>
+                        <li>رفع الكود إلى Heroku باستخدام Git</li>
+                    </ol>
+                    
+                    <h3>ملفات التهيئة المطلوبة</h3>
+                    <p>لنشر البوت على Heroku، تحتاج إلى هذه الملفات:</p>
+                `,
+                code: `
+// Procfile
+worker: node index.js
+
+// package.json
+{
+  "name": "my-discord-bot",
+  "version": "1.0.0",
+  "description": "A simple Discord bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.7.1"
+  },
+  "engines": {
+    "node": "16.x"
+  }
+}
+
+// index.js (ملف البوت الرئيسي)
+const { Client, GatewayIntentBits } = require('discord.js');
+
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
+    ]
+});
+
+client.on('ready', () => {
+    console.log('البوت يعمل على Heroku!');
+});
+
+// استخدام متغير البيئة للتوكن
+client.login(process.env.TOKEN);
+                `,
+                videoUrl: "https://www.youtube.com/embed/example10"
+            }
+        ];
+
+        // بيانات الاختبارات (15 اختبار - 10 للدروس + 5 شاملة)
+        const tests = [
+            // اختبارات الدروس (10)
+            {
+                id: 1,
+                title: "اختبار الدرس 1: مقدمة عن Discord.js",
+                description: "اختبر فهمك للمفاهيم الأساسية في Discord.js",
+                questions: 5,
+                duration: "10 دقائق",
+                type: "lesson",
+                lessonId: 1,
+                questions: [
+                    {
+                        id: 1,
+                        text: "ما هي المكتبة المستخدمة لبرمجة بوتات Discord في Node.js؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "Discord.py", correct: false },
+                            { id: 'b', text: "Discord.js", correct: true },
+                            { id: 'c', text: "DiscordJava", correct: false },
+                            { id: 'd', text: "DiscordBot", correct: false }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        text: "أي من الأوامر التالية يستخدم لتسجيل دخول البوت إلى Discord؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "client.start()", correct: false },
+                            { id: 'b', text: "client.login()", correct: true },
+                            { id: 'c', text: "client.connect()", correct: false },
+                            { id: 'd', text: "client.run()", correct: false }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        text: "ما هو الحدث الذي يتم تشغيله عندما يصبح البوت جاهزًا؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "client.on('ready')", correct: true },
+                            { id: 'b', text: "client.on('start')", correct: false },
+                            { id: 'c', text: "client.on('online')", correct: false },
+                            { id: 'd', text: "client.on('connect')", correct: false }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        text: "كيف يمكن للبوت الرد على رسالة معينة؟",
+                        points: 10,
+                        options: [
+                            { id: 'a', text: "message.response()", correct: false },
+                            { id: 'b', text: "message.sendReply()", correct: false },
+                            { id: 'c', text: "message.reply()", correct: true },
+                            { id: 'd', text: "message.answer()", correct: false }
+                        ]
+                    },
+                    {
+                        id: 5,
+                        text: "ما هي الطريقة الصحيحة لإنشاء زر تفاعلي في Discord.js v14؟",
+                        points: 10,
+                        options: [
+                            { id: 'a', text: "new Button()", correct: false },
+                            { id: 'b', text: "new MessageButton()", correct: false },
+                            { id: 'c', text: "new ButtonBuilder()", correct: true },
+                            { id: 'd', text: "new InteractiveButton()", correct: false }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "اختبار الدرس 2: تثبيت Node.js و VS Code",
+                description: "اختبر معرفتك بأدوات تطوير بوتات Discord",
+                questions: 5,
+                duration: "10 دقائق",
+                type: "lesson",
+                lessonId: 2,
+                questions: [
+                    {
+                        id: 1,
+                        text: "ما هو الأمر المستخدم لتهيئة مشروع Node.js جديد؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "npm start", correct: false },
+                            { id: 'b', text: "npm init", correct: true },
+                            { id: 'c', text: "node init", correct: false },
+                            { id: 'd', text: "npm create", correct: false }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        text: "كيف يمكن تثبيت Discord.js في المشروع؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "npm install discord", correct: false },
+                            { id: 'b', text: "npm add discord.js", correct: false },
+                            { id: 'c', text: "npm install discord.js", correct: true },
+                            { id: 'd', text: "node install discord.js", correct: false }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        text: "ما هو الإصدار الموصى به من Node.js للمشاريع الجديدة؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "الإصدار LTS", correct: true },
+                            { id: 'b', text: "الإصدار الحالي", correct: false },
+                            { id: 'c', text: "أي إصدار", correct: false },
+                            { id: 'd', text: "الإصدار التجريبي", correct: false }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        text: "ما هو الأمر للتحقق من إصدار Node.js المثبت؟",
+                        points: 10,
+                        options: [
+                            { id: 'a', text: "node --version", correct: true },
+                            { id: 'b', text: "node -v", correct: true },
+                            { id: 'c', text: "npm --version", correct: false },
+                            { id: 'd', text: "check node version", correct: false }
+                        ]
+                    },
+                    {
+                        id: 5,
+                        text: "أي من الملفات التالية يتم إنشاؤه عند تنفيذ npm init؟",
+                        points: 10,
+                        options: [
+                            { id: 'a', text: "package.json", correct: true },
+                            { id: 'b', text: "config.js", correct: false },
+                            { id: 'c', text: "settings.json", correct: false },
+                            { id: 'd', text: "project.json", correct: false }
+                        ]
+                    }
+                ]
+            },
+            // اختبارات شاملة (5)
+            {
+                id: 11,
+                title: "الاختبار الشامل 1: أساسيات Discord.js",
+                description: "اختبر معرفتك الشاملة بالمفاهيم الأساسية في Discord.js",
+                questions: 15,
+                duration: "30 دقيقة",
+                type: "comprehensive",
+                questions: [
+                    {
+                        id: 1,
+                        text: "ما هي المكتبة المستخدمة لبرمجة بوتات Discord في Node.js؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "Discord.py", correct: false },
+                            { id: 'b', text: "Discord.js", correct: true },
+                            { id: 'c', text: "DiscordJava", correct: false },
+                            { id: 'd', text: "DiscordBot", correct: false }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        text: "أي من الأوامر التالية يستخدم لتسجيل دخول البوت إلى Discord؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "client.start()", correct: false },
+                            { id: 'b', text: "client.login()", correct: true },
+                            { id: 'c', text: "client.connect()", correct: false },
+                            { id: 'd', text: "client.run()", correct: false }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        text: "ما هو الحدث الذي يتم تشغيله عندما يصبح البوت جاهزًا؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "client.on('ready')", correct: true },
+                            { id: 'b', text: "client.on('start')", correct: false },
+                            { id: 'c', text: "client.on('online')", correct: false },
+                            { id: 'd', text: "client.on('connect')", correct: false }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        text: "كيف يمكن للبوت الرد على رسالة معينة؟",
+                        points: 10,
+                        options: [
+                            { id: 'a', text: "message.response()", correct: false },
+                            { id: 'b', text: "message.sendReply()", correct: false },
+                            { id: 'c', text: "message.reply()", correct: true },
+                            { id: 'd', text: "message.answer()", correct: false }
+                        ]
+                    },
+                    {
+                        id: 5,
+                        text: "ما هي الطريقة الصحيحة لإنشاء زر تفاعلي في Discord.js v14؟",
+                        points: 10,
+                        options: [
+                            { id: 'a', text: "new Button()", correct: false },
+                            { id: 'b', text: "new MessageButton()", correct: false },
+                            { id: 'c', text: "new ButtonBuilder()", correct: true },
+                            { id: 'd', text: "new InteractiveButton()", correct: false }
+                        ]
+                    },
+                    {
+                        id: 6,
+                        text: "ما هو الأمر المستخدم لتهيئة مشروع Node.js جديد؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "npm start", correct: false },
+                            { id: 'b', text: "npm init", correct: true },
+                            { id: 'c', text: "node init", correct: false },
+                            { id: 'd', text: "npm create", correct: false }
+                        ]
+                    },
+                    {
+                        id: 7,
+                        text: "كيف يمكن تثبيت Discord.js في المشروع؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "npm install discord", correct: false },
+                            { id: 'b', text: "npm add discord.js", correct: false },
+                            { id: 'c', text: "npm install discord.js", correct: true },
+                            { id: 'd', text: "node install discord.js", correct: false }
+                        ]
+                    },
+                    {
+                        id: 8,
+                        text: "ما هو الإصدار الموصى به من Node.js للمشاريع الجديدة؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "الإصدار LTS", correct: true },
+                            { id: 'b', text: "الإصدار الحالي", correct: false },
+                            { id: 'c', text: "أي إصدار", correct: false },
+                            { id: 'd', text: "الإصدار التجريبي", correct: false }
+                        ]
+                    },
+                    {
+                        id: 9,
+                        text: "ما هو الأمر للتحقق من إصدار Node.js المثبت؟",
+                        points: 10,
+                        options: [
+                            { id: 'a', text: "node --version", correct: true },
+                            { id: 'b', text: "node -v", correct: true },
+                            { id: 'c', text: "npm --version", correct: false },
+                            { id: 'd', text: "check node version", correct: false }
+                        ]
+                    },
+                    {
+                        id: 10,
+                        text: "أي من الملفات التالية يتم إنشاؤه عند تنفيذ npm init؟",
+                        points: 10,
+                        options: [
+                            { id: 'a', text: "package.json", correct: true },
+                            { id: 'b', text: "config.js", correct: false },
+                            { id: 'c', text: "settings.json", correct: false },
+                            { id: 'd', text: "project.json", correct: false }
+                        ]
+                    },
+                    {
+                        id: 11,
+                        text: "كيف يمكن منع البوت من الرد على رسائله الخاصة؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "if (message.fromBot) return;", correct: false },
+                            { id: 'b', text: "if (message.author.bot) return;", correct: true },
+                            { id: 'c', text: "if (message.sender.bot) return;", correct: false },
+                            { id: 'd', text: "if (message.bot) return;", correct: false }
+                        ]
+                    },
+                    {
+                        id: 12,
+                        text: "ما هو الحدث المسؤول عن استقبال الرسائل الجديدة؟",
+                        points: 5,
+                        options: [
+                            { id: 'a', text: "messageCreate", correct: true },
+                            { id: 'b', text: "newMessage", correct: false },
+                            { id: 'c', text: "messageReceived", correct: false },
+                            { id: 'd', text: "onMessage", correct: false }
+                        ]
+                    },
+                    {
+                        id: 13,
+                        text: "كيف يمكن إرسال رسالة مضمنة (Embed) في القناة؟",
+                        points: 10,
+                        options: [
+                            { id: 'a', text: "channel.sendEmbed()", correct: false },
+                            { id: 'b', text: "channel.send({ embed: {} })", correct: false },
+                            { id: 'c', text: "channel.send({ embeds: [] })", correct: true },
+                            { id: 'd', text: "channel.embed()", correct: false }
+                        ]
+                    },
+                    {
+                        id: 14,
+                        text: "ما هي الدالة المستخدمة للبحث عن قناة بالاسم؟",
+                        points: 10,
+                        options: [
+                            { id: 'a', text: "guild.channels.find()", correct: false },
+                            { id: 'b', text: "guild.channels.cache.find()", correct: true },
+                            { id: 'c', text: "guild.findChannel()", correct: false },
+                            { id: 'd', text: "guild.getChannel()", correct: false }
+                        ]
+                    },
+                    {
+                        id: 15,
+                        text: "كيف يمكن إرسال رسالة إلى قناة محددة باستخدام معرفها؟",
+                        points: 10,
+                        options: [
+                            { id: 'a', text: "client.channels.get(id).send()", correct: false },
+                            { id: 'b', text: "client.channels.cache.get(id).send()", correct: true },
+                            { id: 'c', text: "client.getChannel(id).send()", correct: false },
+                            { id: 'd', text: "client.sendToChannel(id)", correct: false }
+                        ]
+                    }
+                ]
+            }
+            // يمكن إضافة المزيد من الاختبارات هنا...
+        ];
+
+        // المتغيرات العامة
+        let currentLessonIndex = 0;
+        let currentTestIndex = 0;
+        let userAnswers = {};
+
+        // تهيئة التطبيق
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+
+        function initApp() {
+            renderCourses();
+            renderLessonsMenu();
+            renderTests();
+            setupEventListeners();
+            loadUserProgress();
+        }
+
+        // عرض الدورات في الشبكة
+        function renderCourses() {
+            const coursesContainer = document.getElementById('courses-container');
+            coursesContainer.innerHTML = '';
+            
+            lessons.forEach((lesson, index) => {
+                const progress = Math.min(index * 10 + 10, 100);
+                const isCompleted = index < currentLessonIndex;
+                const inProgress = index === currentLessonIndex;
+                
+                const courseCard = document.createElement('div');
+                courseCard.className = 'course-card';
+                courseCard.setAttribute('data-lesson', lesson.id);
+                
+                courseCard.innerHTML = `
+                    <div class="course-badge">${lesson.level}</div>
+                    <div class="course-image">
+                        <i class="fas fa-${getLessonIcon(lesson.id)}"></i>
+                    </div>
+                    <div class="course-content">
+                        <h3 class="course-title">${lesson.title}</h3>
+                        <p class="course-description">${lesson.description}</p>
+                        <div class="course-meta">
+                            <span><i class="far fa-clock"></i> ${lesson.duration}</span>
+                            <span><i class="far fa-file-code"></i> ${lesson.examples} أمثلة</span>
+                        </div>
+                        <div class="progress-bar-sm">
+                            <div class="progress-sm" style="width: ${isCompleted ? 100 : inProgress ? progress : 0}%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>${isCompleted ? 'مكتمل' : inProgress ? `${progress}% مكتمل` : 'لم يبدأ بعد'}</span>
+                            <span>الدرس ${lesson.id}</span>
+                        </div>
+                    </div>
+                `;
+                
+                courseCard.addEventListener('click', () => openLesson(index));
+                coursesContainer.appendChild(courseCard);
+            });
+        }
+
+        // الحصول على أيقونة للدرس
+        function getLessonIcon(lessonId) {
+            const icons = [
+                'book', 'download', 'play', 'comment', 'mouse-pointer',
+                'terminal', 'calendar-alt', 'database', 'coins', 'cloud-upload-alt'
+            ];
+            return icons[lessonId - 1] || 'book';
+        }
+
+        // عرض قائمة الدروس في الشريط الجانبي
+        function renderLessonsMenu() {
+            const lessonsMenu = document.getElementById('lessons-menu');
+            lessonsMenu.innerHTML = '';
+            
+            lessons.forEach((lesson, index) => {
+                const isActive = index === currentLessonIndex;
+                
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <a href="#" class="${isActive ? 'active' : ''}" data-lesson="${index}">
+                        <i class="fas fa-${getLessonIcon(lesson.id)}"></i>
+                        <span>${lesson.title}</span>
+                    </a>
+                `;
+                
+                li.querySelector('a').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openLesson(index);
+                });
+                
+                lessonsMenu.appendChild(li);
+            });
+        }
+
+        // عرض الاختبارات
+        function renderTests() {
+            const testsContainer = document.getElementById('tests-container');
+            testsContainer.innerHTML = '';
+            
+            tests.forEach((test, index) => {
+                const testCard = document.createElement('div');
+                testCard.className = 'test-card';
+                testCard.setAttribute('data-test', test.id);
+                
+                testCard.innerHTML = `
+                    <div class="test-icon">
+                        <i class="fas fa-${test.type === 'lesson' ? 'book' : 'graduation-cap'}"></i>
+                    </div>
+                    <h3 class="test-title">${test.title}</h3>
+                    <p class="test-description">${test.description}</p>
+                    <div class="test-meta">
+                        <span><i class="far fa-question-circle"></i> ${test.questions} أسئلة</span>
+                        <span><i class="far fa-clock"></i> ${test.duration}</span>
+                    </div>
+                `;
+                
+                testCard.addEventListener('click', () => openTest(index));
+                testsContainer.appendChild(testCard);
+            });
+        }
+
+        // فتح درس معين
+        function openLesson(index) {
+            if (index < 0 || index >= lessons.length) return;
+            
+            currentLessonIndex = index;
+            const lesson = lessons[index];
+            
+            // تحديث واجهة الدرس
+            const lessonContainer = document.getElementById('lesson-content');
+            lessonContainer.innerHTML = `
+                <div class="lesson-header">
+                    <h2 class="lesson-title">${lesson.title}</h2>
+                    <div class="lesson-info">
+                        <span class="lesson-badge">الدرس ${lesson.id}</span>
+                        <span>${lesson.duration} • ${lesson.examples} أمثلة</span>
+                    </div>
+                </div>
+                <div class="lesson-content">
+                    <div class="lesson-text">
+                        ${lesson.content}
+                    </div>
+                    
+                    <div class="code-block">
+                        <button class="copy-code">نسخ الكود</button>
+                        <pre>${lesson.code}</pre>
+                    </div>
+                    
+                    <div class="code-editor">
+                        <div class="editor-header">
+                            <div class="editor-title">محرر الأكواد التفاعلي - جرب التعديل على الكود</div>
+                            <div class="editor-actions">
+                                <button title="تشغيل الكود" id="run-code">▶️ تشغيل</button>
+                                <button title="إعادة تعيين" id="reset-code">🔄 إعادة تعيين</button>
+                                <button title="نسخ الكود" id="copy-editor-code">📋 نسخ</button>
+                            </div>
+                        </div>
+                        <div class="editor-content" contenteditable="true">${lesson.code}</div>
+                        <div class="output-container" id="code-output">
+                            // سيظهر ناتج الكود هنا بعد التشغيل
+                        </div>
+                    </div>
+                    
+                    <div class="video-container">
+                        <div class="video-placeholder">
+                            <i class="fas fa-play-circle" style="font-size: 4rem; opacity: 0.7;"></i>
+                            <span style="margin-right: 15px; font-size: 1.5rem;">فيديو الشرح - ${lesson.title}</span>
+                        </div>
+                        <button class="watch-video-btn">شاهد الفيديو</button>
+                    </div>
+                </div>
+                
+                <div class="lesson-navigation">
+                    <button class="nav-btn" id="prev-lesson" ${index === 0 ? 'disabled' : ''}>
+                        <i class="fas fa-arrow-right"></i> الدرس السابق
+                    </button>
+                    <button class="nav-btn" id="next-lesson" ${index === lessons.length - 1 ? 'disabled' : ''}>
+                        الدرس التالي <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
+            `;
+            
+            // إضافة مستمعي الأحداث للدرس
+            document.getElementById('prev-lesson').addEventListener('click', () => {
+                if (currentLessonIndex > 0) openLesson(currentLessonIndex - 1);
+            });
+            
+            document.getElementById('next-lesson').addEventListener('click', () => {
+                if (currentLessonIndex < lessons.length - 1) openLesson(currentLessonIndex + 1);
+            });
+            
+            document.querySelector('.copy-code').addEventListener('click', () => {
+                const code = lesson.code;
+                navigator.clipboard.writeText(code).then(() => {
+                    const btn = document.querySelector('.copy-code');
+                    btn.textContent = 'تم النسخ!';
+                    setTimeout(() => {
+                        btn.textContent = 'نسخ الكود';
+                    }, 2000);
+                });
+            });
+            
+            document.getElementById('run-code').addEventListener('click', runCode);
+            document.getElementById('reset-code').addEventListener('click', resetCode);
+            document.getElementById('copy-editor-code').addEventListener('click', copyEditorCode);
+            
+            // إظهار قسم الدرس وإخفاء الأقسام الأخرى
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('tests').style.display = 'none';
+            document.getElementById('resources').style.display = 'none';
+            lessonContainer.style.display = 'block';
+            
+            // تحديث القائمة الجانبية
+            renderLessonsMenu();
+            
+            // حفظ تقدم المستخدم
+            saveUserProgress();
+        }
+
+        // تشغيل الكود في المحرر (محاكاة)
+        function runCode() {
+            const output = document.getElementById('code-output');
+            output.innerHTML = '<span style="color: #57F287;">▶ جاري تشغيل الكود...</span>';
+            
+            // محاكاة تشغيل الكود
+            setTimeout(() => {
+                const lesson = lessons[currentLessonIndex];
+                let result = '';
+                
+                if (currentLessonIndex === 0) {
+                    result = 'تم تسجيل الدخول كـ MyBot#1234!\nالبوت جاهز للاستخدام.';
+                } else if (currentLessonIndex === 1) {
+                    result = 'تم إنشاء مجلد المشروع بنجاح.\nتم تثبيت Discord.js بالإصدار 14.7.1';
+                } else if (currentLessonIndex === 2) {
+                    result = 'البوت يعمل!\nاسم البوت: MyBot#1234\nعدد السيرفرات: 1';
+                } else if (currentLessonIndex === 3) {
+                    result = 'تم إرسال رسالة المساعدة بنجاح.';
+                } else if (currentLessonIndex === 4) {
+                    result = 'تم إنشاء الأزرار التفاعلية بنجاح.';
+                } else if (currentLessonIndex === 5) {
+                    result = 'تم تسجيل أوامر Slash بنجاح!';
+                } else if (currentLessonIndex === 6) {
+                    result = 'تم إعداد نظام الأحداث بنجاح.';
+                } else if (currentLessonIndex === 7) {
+                    result = 'تم حفظ البيانات في قاعدة البيانات بنجاح.';
+                } else if (currentLessonIndex === 8) {
+                    result = 'تم إنشاء النظام الاقتصادي بنجاح.';
+                } else if (currentLessonIndex === 9) {
+                    result = 'تم إعداد البوت للنشر على Heroku.';
+                }
+                
+                output.innerHTML = `<span style="color: #57F287;">✅ تم التنفيذ بنجاح!</span>\n<pre>${result}</pre>`;
+            }, 1500);
+        }
+
+        // إعادة تعيين المحرر
+        function resetCode() {
+            const editor = document.querySelector('.editor-content');
+            const lesson = lessons[currentLessonIndex];
+            editor.textContent = lesson.code;
+            
+            const output = document.getElementById('code-output');
+            output.innerHTML = '// سيظهر ناتج الكود هنا بعد التشغيل';
+        }
+
+        // نسخ كود المحرر
+        function copyEditorCode() {
+            const editor = document.querySelector('.editor-content');
+            navigator.clipboard.writeText(editor.textContent).then(() => {
+                const btn = document.getElementById('copy-editor-code');
+                btn.textContent = 'تم النسخ!';
+                setTimeout(() => {
+                    btn.textContent = '📋 نسخ';
+                }, 2000);
+            });
+        }
+
+        // فتح اختبار معين
+        function openTest(index) {
+            if (index < 0 || index >= tests.length) return;
+            
+            currentTestIndex = index;
+            const test = tests[index];
+            userAnswers = {};
+            
+            const testContainer = document.getElementById('test-questions-container');
+            testContainer.innerHTML = `
+                <div class="test-header">
+                    <h2 class="test-title-large">${test.title}</h2>
+                    <div class="test-info">
+                        <span class="test-timer">${test.duration}</span>
+                        <span>${test.questions} أسئلة</span>
+                    </div>
+                </div>
+                <div id="test-questions-list">
+                    ${test.questions.map((question, qIndex) => `
+                        <div class="question">
+                            <div class="question-header">
+                                <span class="question-number">سؤال ${qIndex + 1}</span>
+                                <span class="question-points">${question.points} نقطة</span>
+                            </div>
+                            <div class="question-text">${question.text}</div>
+                            <div class="options">
+                                ${question.options.map(option => `
+                                    <div class="option" data-question="${question.id}" data-option="${option.id}">
+                                        <input type="radio" name="q${question.id}" id="q${question.id}${option.id}">
+                                        <label for="q${question.id}${option.id}" class="option-label">${option.text}</label>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <button class="submit-btn" id="submit-test">تقديم الإجابات</button>
+                <div class="result-container" id="test-result">
+                    <!-- سيتم ملؤه بعد تقديم الإجابات -->
+                </div>
+            `;
+            
+            // إضافة مستمعي الأحداث للخيارات
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionId = this.getAttribute('data-question');
+                    const optionId = this.getAttribute('data-option');
+                    
+                    // إزالة التحديد من جميع الخيارات في نفس السؤال
+                    const question = this.closest('.question');
+                    question.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // تحديد الخيار المختار
+                    this.classList.add('selected');
+                    this.querySelector('input').checked = true;
+                    
+                    // حفظ الإجابة
+                    userAnswers[questionId] = optionId;
+                });
+            });
+            
+            // إضافة مستمع حدث لتقديم الاختبار
+            document.getElementById('submit-test').addEventListener('click', submitTest);
+            
+            // إظهار قسم الاختبارات وإخفاء الأقسام الأخرى
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('lesson-content').style.display = 'none';
+            document.getElementById('resources').style.display = 'none';
+            document.getElementById('tests').style.display = 'block';
+            testContainer.style.display = 'block';
+            document.getElementById('test-result').style.display = 'none';
+        }
+
+        // تقديم الإجابات وتصحيح الاختبار
+        function submitTest() {
+            const test = tests[currentTestIndex];
+            let score = 0;
+            let totalPoints = 0;
+            const results = [];
+            
+            test.questions.forEach(question => {
+                totalPoints += question.points;
+                const userAnswer = userAnswers[question.id];
+                const correctOption = question.options.find(opt => opt.correct);
+                
+                if (userAnswer === correctOption.id) {
+                    score += question.points;
+                    results.push({
+                        question: question.text,
+                        correct: true,
+                        userAnswer: question.options.find(opt => opt.id === userAnswer).text,
+                        correctAnswer: correctOption.text
+                    });
+                } else {
+                    results.push({
+                        question: question.text,
+                        correct: false,
+                        userAnswer: userAnswer ? question.options.find(opt => opt.id === userAnswer).text : 'لم يتم الإجابة',
+                        correctAnswer: correctOption.text
+                    });
+                }
+            });
+            
+            const percentage = Math.round((score / totalPoints) * 100);
+            let feedback = '';
+            let icon = '';
+            let iconColor = '';
+            
+            if (percentage >= 90) {
+                feedback = 'ممتاز! لديك فهم قوي جدًا للمفاهيم.';
+                icon = 'fa-trophy';
+                iconColor = '#FFD700';
+            } else if (percentage >= 70) {
+                feedback = 'جيد جدًا! لديك فهم جيد للمفاهيم.';
+                icon = 'fa-star';
+                iconColor = '#C0C0C0';
+            } else if (percentage >= 50) {
+                feedback = 'ليس سيئًا! يمكنك التحسين بمراجعة بعض الدروس.';
+                icon = 'fa-award';
+                iconColor = '#CD7F32';
+            } else {
+                feedback = 'يجب مراجعة الدروس مرة أخرى لتحسين فهمك.';
+                icon = 'fa-redo';
+                iconColor = '#ED4245';
+            }
+            
+            // عرض النتائج
+            const testResult = document.getElementById('test-result');
+            testResult.innerHTML = `
+                <div class="result-icon">
+                    <i class="fas ${icon}" style="color: ${iconColor};"></i>
+                </div>
+                <div class="result-title">نتيجة الاختبار</div>
+                <div class="result-score">${percentage}%</div>
+                <div class="result-feedback">${feedback}</div>
+                
+                <div class="result-stats">
+                    <div class="stat">
+                        <div class="stat-value">${score}/${totalPoints}</div>
+                        <div class="stat-label">النقاط</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">${Math.round((score / totalPoints) * 100)}%</div>
+                        <div class="stat-label">النسبة</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">${test.questions.length}</div>
+                        <div class="stat-label">الأسئلة</div>
+                    </div>
+                </div>
+                
+                <div class="result-details">
+                    <h4 style="margin-bottom: 1rem;">تفاصيل الإجابات:</h4>
+                    ${results.map((result, index) => `
+                        <div style="margin-bottom: 1rem; padding: 10px; border-left: 4px solid ${result.correct ? '#57F287' : '#ED4245'}; background: rgba(0,0,0,0.05);">
+                            <div><strong>سؤال ${index + 1}:</strong> ${result.question}</div>
+                            <div>إجابتك: <span style="color: ${result.correct ? '#57F287' : '#ED4245'}">${result.userAnswer}</span></div>
+                            ${!result.correct ? `<div>الإجابة الصحيحة: <span style="color: #57F287">${result.correctAnswer}</span></div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="result-actions">
+                    <button class="action-btn restart-btn" id="restart-test">إعادة الاختبار</button>
+                    <button class="action-btn review-btn" id="review-lesson">مراجعة الدروس</button>
+                </div>
+            `;
+            
+            testResult.style.display = 'block';
+            
+            // إضافة مستمعي الأحداث للأزرار
+            document.getElementById('restart-test').addEventListener('click', () => {
+                openTest(currentTestIndex);
+            });
+            
+            document.getElementById('review-lesson').addEventListener('click', () => {
+                const test = tests[currentTestIndex];
+                if (test.type === 'lesson') {
+                    openLesson(test.lessonId - 1);
+                } else {
+                    document.getElementById('home').style.display = 'block';
+                    document.getElementById('test-questions-container').style.display = 'none';
+                    document.getElementById('test-result').style.display = 'none';
+                }
+            });
+            
+            // حفظ نتيجة الاختبار
+            saveTestResult(test.id, percentage);
+        }
+
+        // إعداد مستمعي الأحداث
+        function setupEventListeners() {
+            // تبديل الوضع الداكن/الفاتح
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                document.body.setAttribute('data-theme', newTheme);
+                themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
+                
+                // حفظ التفضيل في localStorage
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // التنقل بين الأقسام
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = link.getAttribute('data-target');
+                    
+                    // تحديث حالة التنقل
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    // إخفاء جميع الأقسام
+                    document.getElementById('home').style.display = 'none';
+                    document.getElementById('lesson-content').style.display = 'none';
+                    document.getElementById('tests').style.display = 'none';
+                    document.getElementById('resources').style.display = 'none';
+                    document.getElementById('test-questions-container').style.display = 'none';
+                    
+                    // إظهار القسم المطلوب
+                    if (target === 'home') {
+                        document.getElementById('home').style.display = 'block';
+                    } else if (target === 'courses') {
+                        document.getElementById('home').style.display = 'block';
+                    } else if (target === 'tests') {
+                        document.getElementById('tests').style.display = 'block';
+                    } else if (target === 'resources') {
+                        document.getElementById('resources').style.display = 'block';
+                    }
+                });
+            });
+
+            // تصفية الاختبارات
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    filterTests(filter);
+                });
+            });
+        }
+
+        // تصفية الاختبارات حسب النوع
+        function filterTests(filter) {
+            const testsContainer = document.getElementById('tests-container');
+            const testCards = testsContainer.querySelectorAll('.test-card');
+            
+            testCards.forEach(card => {
+                const testId = card.getAttribute('data-test');
+                const test = tests.find(t => t.id == testId);
+                
+                if (filter === 'all' || test.type === filter) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // حفظ تقدم المستخدم في localStorage
+        function saveUserProgress() {
+            const progress = {
+                currentLesson: currentLessonIndex,
+                completedLessons: Array.from({length: currentLessonIndex}, (_, i) => i),
+                lastAccess: new Date().toISOString()
+            };
+            localStorage.setItem('userProgress', JSON.stringify(progress));
+            updateProgressDisplay();
+        }
+
+        // حفظ نتيجة الاختبار
+        function saveTestResult(testId, score) {
+            const testResults = JSON.parse(localStorage.getItem('testResults') || '{}');
+            testResults[testId] = {
+                score: score,
+                date: new Date().toISOString()
+            };
+            localStorage.setItem('testResults', JSON.stringify(testResults));
+        }
+
+        // تحميل تقدم المستخدم من localStorage
+        function loadUserProgress() {
+            const savedProgress = localStorage.getItem('userProgress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                currentLessonIndex = progress.currentLesson || 0;
+                updateProgressDisplay();
+            }
+            
+            // تحميل تفضيلات الوضع
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.body.setAttribute('data-theme', savedTheme);
+                document.getElementById('themeToggle').textContent = savedTheme === 'light' ? '🌙' : '☀️';
+            }
+        }
+
+        // تحديث عرض التقدم
+        function updateProgressDisplay() {
+            const progressPercentage = Math.min((currentLessonIndex / lessons.length) * 100, 100);
+            document.getElementById('overall-progress').style.width = `${progressPercentage}%`;
+            document.getElementById('progress-percentage').textContent = `${Math.round(progressPercentage)}%`;
+        }
+    </script>
+</body>
+</html>
