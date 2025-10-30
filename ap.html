@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تحليل بوت ديسكورد - كشف كل اللي نقدر نكشفه</title>
+<style>
+  :root{--red:#e74c3c;--red-dark:#c0392b;--bg:#0f0f10;--card:#171717;--muted:#aaa}
+  body{font-family:system-ui,Arial; background:var(--bg); color:#fff; margin:0; padding:20px; direction:rtl}
+  .wrap{max-width:920px;margin:18px auto}
+  h1{margin:6px 0 12px;font-size:20px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  input,select,button,textarea{padding:10px;border-radius:8px;border:0;background:#111;color:#fff;min-height:44px}
+  input[placeholder]{color:var(--muted)}
+  button{background:var(--red);cursor:pointer}
+  button:hover{background:var(--red-dark)}
+  .card{background:var(--card);padding:14px;border-radius:12px;margin-top:12px}
+  pre{white-space:pre-wrap;color:#ddd;background:transparent;margin:8px 0}
+  img.avatar{width:96px;height:96px;border-radius:50%;display:block;margin:10px auto}
+  .success{color:#9fe29f} .fail{color:#ff9b9b}
+  .small{font-size:13px;color:var(--muted)}
+  .flex-between{display:flex;justify-content:space-between;align-items:center}
+  .wrap-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  label.small{display:block;margin-top:6px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🔎 تحليل بوت ديسكورد — كشف كل ما يمكن كشفه</h1>
+
+  <div class="card">
+    <div class="row wrap-controls">
+      <input id="token" placeholder="ضع توكن البوت هنا (Token)" style="flex:1">
+      <input id="guildId" placeholder="اختياري — Guild ID للكشف عن البريفكس (لو عندك)" style="width:220px">
+      <input id="channelId" placeholder="اختياري — Channel ID لإرسال محاولات (لو عندك)" style="width:220px">
+      <button id="btnAnalyze">🔍 ابدأ الكشف</button>
+      <button id="btnTheme">🌙/☀️</button>
+      <button id="btnHome" onclick="location.href='index.html'">🏠 الرئيسية</button>
+    </div>
+    <div class="small">ملاحظة: الخدمة تعتمد على توكن البوت. إدخال التوكن في المتصفح يسرّع الاختبار لكن غير مستحسن للبيئة الحية — الأفضل تعمل backend آمن.</div>
+  </div>
+
+  <div id="results" style="display:none">
+    <div class="card">
+      <div class="flex-between">
+        <div>
+          <img id="avatar" class="avatar" src="" alt="avatar">
+        </div>
+        <div style="flex:1;margin-right:12px;text-align:right">
+          <h2 id="botName">...</h2>
+          <div id="botId" class="small">ID: ...</div>
+          <div id="verified" class="small">موثّق: ...</div>
+          <div id="guildsCount" class="small">عدد السيرفرات: ...</div>
+          <div id="prefix" class="small">بريفكس (مكتشف/تقديري): ...</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="cardsArea">
+      <div class="card">
+        <h3>📦 معلومات أساسية (API responses)</h3>
+        <pre id="rawUser">-</pre>
+      </div>
+
+      <div class="card">
+        <h3>🧭 Gateway / Rate Limits</h3>
+        <pre id="gateway">-</pre>
+      </div>
+
+      <div class="card">
+        <h3>🛠️ Slash Commands المسجلة</h3>
+        <pre id="commands">-</pre>
+      </div>
+
+      <div class="card">
+        <h3>🔎 محاولة كشف البريفكس (تلقائي)</h3>
+        <div class="small">طريقة الكشف: يرسل رسائل تجريبية إلى القناة (مطلوب Channel ID وصلاحيات إرسال/قراءة). إذا رد البوت الهدف سيتم استخراج البريفكس.</div>
+        <pre id="prefixResult">لم تبدأ المحاولة بعد.</pre>
+      </div>
+
+      <div class="card">
+        <h3>🧾 Application / Owner / Flags (إن وُجدت)</h3>
+        <pre id="appInfo">-</pre>
+      </div>
+
+      <div class="card">
+        <h3>🎮 تجربة أوامر (عرض الوصف أو ردود Slash فقط)</h3>
+        <div class="small">اكتب اسم الأمر (مسبقاً من قائمة Slash) لتعرض الوصف أو تحاكي التشغيل.</div>
+        <input id="cmdInput" placeholder="/help أو /ping" style="width:70%">
+        <button onclick="runCmd()">تشغيل / اظهار</button>
+        <pre id="cmdOutput">-</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card small" id="notes">
+    <strong>ملاحظات تقنية وسلامة (اقرأ):</strong>
+    <ul>
+      <li>Discord API تمنع الوصول من بعض المتصفحات بسبب سياسات CORS — لو واجهت أخطاء CORS، شغّل نفس الكود على backend (Express) أو استخدم Replit/وظيفة سيرفرية.</li>
+      <li>لا تشارك توكن البوت مع أحد. الأفضل استخدام هذا الاختبار على بوت تجريبي أو عبر backend آمن.</li>
+      <li>عملية كشف البريفكس بإرسال رسائل قد تترك سجلاً في القناة — يمكنك حذف رسائل المحاولات في السكربت لو أردت.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const el = id => document.getElementById(id);
+const tryPrefixes = ['!','/','?','.','-','~','$','>','++','r!','_','%','^']; // قابل للتعديل
+const tryCommands = ['help','ping','info','bot','commands','menu','start'];
+
+document.getElementById('btnAnalyze').onclick = analyze;
+document.getElementById('btnTheme').onclick = () => document.body.classList.toggle('light');
+
+async function analyze(){
+  resetUI();
+  const token = el('token').value.trim();
+  if(!token){ alert('حط توكن البوت'); return; }
+  el('results').style.display='block';
+
+  // 1) users/@me
+  let user;
+  try {
+    const res = await fetch('https://discord.com/api/v10/users/@me', { headers: { Authorization: 'Bot '+token }});
+    if(!res.ok) throw new Error('users/@me => '+res.status+' '+res.statusText);
+    user = await res.json();
+    el('rawUser').textContent = JSON.stringify(user,null,2);
+    el('botName').textContent = `${user.username}#${user.discriminator || '0000'}`;
+    el('botId').textContent = `ID: ${user.id}`;
+    el('avatar').src = user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256` : '';
+    el('verified').textContent = 'موثّق: ' + (user.verified ? '✅ نعم' : '❌ لا');
+  } catch(err){
+    el('rawUser').textContent = 'فشل جلب users/@me: '+err;
+    return;
+  }
+
+  // 2) users/@me/guilds => عدد السيرفرات (ممكن paginated)
+  try {
+    const res = await fetch('https://discord.com/api/v10/users/@me/guilds', { headers: { Authorization: 'Bot '+token }});
+    if(!res.ok) throw new Error('guilds => '+res.status);
+    const guilds = await res.json();
+    el('guildsCount').textContent = `عدد السيرفرات: ${Array.isArray(guilds) ? guilds.length : 'غير معروف'}`;
+  } catch(err){
+    el('guildsCount').textContent = 'عدد السيرفرات: فشل جلب ('+err+')';
+  }
+
+  // 3) commands
+  try {
+    const res = await fetch(`https://discord.com/api/v10/applications/${user.id}/commands`, { headers: { Authorization: 'Bot '+token }});
+    if(!res.ok) {
+      el('commands').textContent = 'فشل جلب أوامر: ' + res.status + ' ' + res.statusText;
+    } else {
+      const cmds = await res.json();
+      if(Array.isArray(cmds) && cmds.length>0) {
+        el('commands').textContent = cmds.map(c => `/${c.name} → ${c.description || '(بدون وصف)'}\n`).join('');
+        // حفظ للأستخدام لاحقاً
+        window.__BOT_COMMANDS = cmds;
+      } else el('commands').textContent = 'لا توجد أوامر مسجلة';
+    }
+  } catch(err){
+    el('commands').textContent = 'خطأ بجلب الأوامر: '+err;
+  }
+
+  // 4) gateway/bot
+  try {
+    const res = await fetch('https://discord.com/api/v10/gateway/bot', { headers: { Authorization: 'Bot '+token }});
+    const g = await res.json();
+    el('gateway').textContent = JSON.stringify(g,null,2);
+  } catch(err){
+    el('gateway').textContent = 'فشل جلب gateway: '+err;
+  }
+
+  // 5) application info (best-effort)
+  try {
+    const res = await fetch(`https://discord.com/api/v10/oauth2/applications/${user.id}`, { headers: { Authorization: 'Bot '+token }});
+    if(res.ok) {
+      const app = await res.json();
+      el('appInfo').textContent = JSON.stringify(app,null,2);
+      if(app.owner) el('botName').textContent += ` (Owner: ${app.owner.username || app.owner.id})`;
+    } else {
+      el('appInfo').textContent = `لا يمكن جلب بيانات التطبيق (${res.status}) — قد لا تكون صلاحية كافية.`;
+    }
+  } catch(err){
+    el('appInfo').textContent = 'خطأ جلب Application: '+err;
+  }
+
+  // 6) محاولة كشف البريفكس إذا أعطيت Guild+Channel
+  const guildId = el('guildId').value.trim();
+  const channelId = el('channelId').value.trim();
+  if(guildId && channelId){
+    el('prefixResult').textContent = 'جارٍ المحاولة — هذا قد يرسل رسائل تجريبية إلى القناة...';
+    const detected = await tryDetectPrefix(token, user.id, channelId);
+    if(detected) {
+      el('prefixResult').textContent = `تم الكشف: prefix = "${detected.prefix}" عبر اختبار الأمر "${detected.tested}"\nرد البوت:\n${detected.reply}`;
+      el('prefix').textContent = `بريفكس (مكتشف): ${detected.prefix}`;
+    } else {
+      el('prefixResult').textContent = 'لم يتم الكشف عن بريفكس مع قائمة المحاولات الحالية.';
+    }
+  } else {
+    el('prefixResult').textContent = 'لم تُزود Guild ID و/أو Channel ID — الكشف التلقائي للبريفكس معطل.';
+  }
+}
+
+async function tryDetectPrefix(token, targetBotId, channelId){
+  // سيحاول إرسال رسائل تجريبية ويفحص ردود البوت الهدف
+  // ملاحظة: قد تمنع متصفحات CORS هذه الطلبات؛ لو ظهر خطأ CORS استخدم backend.
+  for(const prefix of tryPrefixes){
+    for(const cmd of tryCommands){
+      const content = `${prefix}${cmd}`;
+      try {
+        // إرسال رسالة إلى القناة
+        const post = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+          method:'POST',
+          headers:{
+            Authorization: 'Bot '+token,
+            'Content-Type':'application/json'
+          },
+          body: JSON.stringify({content})
+        });
+        if(!post.ok) {
+          // حذف رسالة غير ضروري، لكن نكمل
+          // في بعض الحالات ستعود 403/401 إذا التوكن لا يملك صلاحية
+        } else {
+          const posted = await post.json();
+          // الآن ننتظر لردود البوت الهدف في نفس القناة عبر GET messages last few
+          // (REST لا يدعم فلترة حسب author بسهولة بدون استدعاء الرسائل)
+          // سنجرب نقرأ آخر 10 رسائل ونبحث عن رسالة من targetBotId
+          await sleep(800); // انتظر رد محتمل
+          const msgsRes = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages?limit=10`, {
+            headers: { Authorization: 'Bot '+token }
+          });
+          if(msgsRes.ok){
+            const msgs = await msgsRes.json();
+            const reply = msgs.find(m => m.author && m.author.id === targetBotId && m.id !== posted.id);
+            if(reply){
+              // نحاول حذف رسالة الاختبار لتخفيف الفوضى
+              try { await fetch(`https://discord.com/api/v10/channels/${channelId}/messages/${posted.id}`, { method:'DELETE', headers:{ Authorization:'Bot '+token } }); } catch(e){}
+              return { prefix, tested:cmd, reply: reply.content || JSON.stringify(reply) };
+            } else {
+              // حذف رسالة الاختبار لو نقدر
+              try { await fetch(`https://discord.com/api/v10/channels/${channelId}/messages/${posted.id}`, { method:'DELETE', headers:{ Authorization:'Bot '+token } }); } catch(e){}
+            }
+          }
+        }
+      } catch(e){
+        // ممكن يكون خطأ CORS أو صلاحيات، نرجع null نهائياً لو كان CORS
+        if(String(e).toLowerCase().includes('cors')) {
+          el('prefixResult').textContent = 'خطأ CORS عند إرسال رسائل — استخدم backend آمن أو Replit.';
+          return null;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+function runCmd(){
+  const input = el('cmdInput').value.trim();
+  if(!window.__BOT_COMMANDS) { el('cmdOutput').textContent = 'لا توجد بيانات أوامر محفوظه.'; return; }
+  const name = input.startsWith('/') ? input.slice(1) : input;
+  const cmd = window.__BOT_COMMANDS.find(c => c.name === name);
+  if(!cmd) { el('cmdOutput').textContent = 'الأمر غير موجود في قائمة Slash Commands.'; return; }
+  el('cmdOutput').textContent = `/${cmd.name} → ${cmd.description || '(بدون وصف)'}\nFull JSON:\n${JSON.stringify(cmd,null,2)}`;
+}
+
+function resetUI(){
+  el('results').style.display='none';
+  el('rawUser').textContent = '-';
+  el('gateway').textContent = '-';
+  el('commands').textContent = '-';
+  el('appInfo').textContent = '-';
+  el('prefixResult').textContent = 'لم تبدأ المحاولة بعد.';
+  el('cmdOutput').textContent = '-';
+  el('botName').textContent = '...';
+  el('botId').textContent = 'ID: ...';
+  el('avatar').src = '';
+  el('verified').textContent = '...';
+  el('guildsCount').textContent = 'عدد السيرفرات: ...';
+  el('prefix').textContent = 'بريفكس (مكتشف/تقديري): ...';
+}
+</script>
+</body>
+</html>
