@@ -2,22 +2,32 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>رشق مشاهدات تيك توك</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Tajawal', sans-serif;
       background: radial-gradient(circle at center, #121212, #000);
       color: #fff;
       text-align: center;
-      padding: 70px 20px;
+      padding: 50px 15px;
       min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     h1 {
       color: #ff2e2e;
-      font-size: 2.3em;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
       letter-spacing: 1px;
       margin-bottom: 25px;
       text-shadow: 0 0 10px rgba(255, 46, 46, 0.7);
@@ -25,19 +35,19 @@
 
     form {
       background: rgba(25, 25, 25, 0.9);
-      padding: 35px;
+      padding: 30px;
       border-radius: 20px;
-      display: inline-block;
       box-shadow: 0 0 40px rgba(255, 0, 0, 0.25);
-      width: 330px;
+      width: 100%;
+      max-width: 380px;
       backdrop-filter: blur(5px);
       border: 1px solid rgba(255, 0, 0, 0.15);
     }
 
     input {
       display: block;
-      width: 90%;
-      margin: 15px auto;
+      width: 100%;
+      margin: 15px 0;
       padding: 12px;
       border-radius: 10px;
       border: 1px solid #ff2e2e;
@@ -60,17 +70,17 @@
       font-size: 17px;
       border: none;
       padding: 12px 0;
-      width: 95%;
+      width: 100%;
       border-radius: 10px;
       cursor: pointer;
-      margin-top: 15px;
+      margin-top: 10px;
       box-shadow: 0 0 15px rgba(255, 46, 46, 0.4);
       transition: all 0.3s ease-in-out;
     }
 
     button:hover {
       background: #ff0000;
-      transform: scale(1.05);
+      transform: scale(1.03);
       box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
     }
 
@@ -82,10 +92,20 @@
 
     footer {
       margin-top: 40px;
-      color: #444;
+      color: #555;
       font-size: 13px;
     }
 
+    @media (max-width: 480px) {
+      form {
+        padding: 25px 20px;
+        border-radius: 15px;
+      }
+      input, button {
+        font-size: 15px;
+        padding: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -108,7 +128,7 @@
       const discordUser = document.getElementById("discord_user").value;
       const tiktokLink = document.getElementById("tiktok_link").value;
       
-      const email = "ahmedhrbz52@gmail.com"; // غيّرها لإيميلك
+      const email = "ahmedhrbz52@gmail.com"; // غيّرها لإيميلك الحقيقي
       const subject = encodeURIComponent("طلب رشق جديد من " + discordUser);
       const body = encodeURIComponent("👤 المستخدم: " + discordUser + "\n🎬 رابط الفيديو: " + tiktokLink);
       
