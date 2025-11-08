@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embed Creator</title>
+  <style>
+    body {
+      background: radial-gradient(circle at top, #0b0f1a, #000);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      color: #00ffe0;
+      text-shadow: 0 0 10px #00ffe0;
+      margin-bottom: 20px;
+    }
+    .container {
+      width: 90%;
+      max-width: 800px;
+      background: rgba(15, 20, 30, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px #00ffff33;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: #9effff;
+    }
+    input, textarea, select, button {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 0.9em;
+      outline: none;
+      transition: 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #00ffee;
+      box-shadow: 0 0 10px #00ffee66;
+    }
+    button {
+      background: linear-gradient(90deg, #ff0077, #7700ff);
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: 0.3s;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #7700ff88;
+    }
+    .preview {
+      background: #101520;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      border-left: 5px solid #00ffee;
+      overflow-wrap: break-word;
+    }
+    .buttons-area {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn-block {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .add-btn {
+      background: linear-gradient(90deg, #00ff88, #00ffff);
+    }
+    .glow {
+      animation: glow 3s infinite alternate;
+    }
+    @keyframes glow {
+      from { box-shadow: 0 0 5px #00ffff; }
+      to { box-shadow: 0 0 20px #00ffff; }
+    }
+  </style>
+</head>
+<body>
+  <h1>✨ Discord Embed Creator</h1>
+  <div class="container glow">
+    <label>Webhook URL</label>
+    <input type="text" id="webhook" placeholder="Enter Discord Webhook URL">
+
+    <label>Message Type</label>
+    <select id="msgType">
+      <option value="embed">Embed</option>
+      <option value="text">Text</option>
+    </select>
+
+    <label>Title</label>
+    <input type="text" id="title" placeholder="Enter embed title">
+
+    <label>Description</label>
+    <textarea id="description" rows="3" placeholder="Enter embed description"></textarea>
+
+    <label>Footer</label>
+    <input type="text" id="footer" placeholder="Enter footer text">
+
+    <label>Main Image URL</label>
+    <input type="text" id="image" placeholder="Image URL">
+
+    <label>Thumbnail URL</label>
+    <input type="text" id="thumbnail" placeholder="Thumbnail URL">
+
+    <label>Embed Color</label>
+    <input type="color" id="color" value="#00ffee">
+
+    <div class="buttons-area" id="buttonsArea">
+      <h3 style="color:#00ffee;">Buttons</h3>
+    </div>
+    <button class="add-btn" onclick="addButton()">Add Button</button>
+
+    <button onclick="sendEmbed()">Send</button>
+
+    <div class="preview" id="preview">
+      <h3>Preview:</h3>
+      <p id="previewContent">Nothing yet...</p>
+    </div>
+  </div>
+
+  <script>
+    const preview = document.getElementById('previewContent');
+    const inputs = document.querySelectorAll('input, textarea, select');
+
+    inputs.forEach(i => i.addEventListener('input', updatePreview));
+
+    function updatePreview() {
+      const type = document.getElementById('msgType').value;
+      if (type === "text") {
+        preview.innerHTML = `<p>${document.getElementById('description').value || "Empty message"}</p>`;
+      } else {
+        preview.innerHTML = `
+          <strong style="color:${document.getElementById('color').value};">${document.getElementById('title').value || "No title"}</strong><br>
+          ${document.getElementById('description').value || "No description"}<br>
+          <em>${document.getElementById('footer').value || ""}</em>
+        `;
+      }
+    }
+
+    function addButton() {
+      const area = document.getElementById('buttonsArea');
+      const block = document.createElement('div');
+      block.className = 'btn-block';
+      block.innerHTML = `
+        <input type="text" placeholder="Button Label">
+        <input type="color" value="#00ffee">
+        <select>
+          <option value="text">Send Text</option>
+          <option value="embed">Send Embed</option>
+        </select>
+        <input type="text" placeholder="Text or Embed Content">
+      `;
+      area.appendChild(block);
+    }
+
+    async function sendEmbed() {
+      const webhook = document.getElementById('webhook').value;
+      if (!webhook.startsWith("https://discord.com/api/webhooks")) {
+        alert("Invalid webhook URL!");
+        return;
+      }
+
+      const type = document.getElementById('msgType').value;
+      let payload = {};
+
+      if (type === "text") {
+        payload = { content: document.getElementById('description').value || "Empty message" };
+      } else {
+        payload = {
+          embeds: [{
+            title: document.getElementById('title').value,
+            description: document.getElementById('description').value,
+            color: parseInt(document.getElementById('color').value.replace("#", ""), 16),
+            footer: { text: document.getElementById('footer').value },
+            image: { url: document.getElementById('image').value },
+            thumbnail: { url: document.getElementById('thumbnail').value }
+          }]
+        };
+      }
+
+      const res = await fetch(webhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        alert("Message sent successfully!");
+      } else {
+        alert("Failed to send message!");
+      }
+    }
+  </script>
+</body>
+</html>
