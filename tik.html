@@ -1,260 +1,119 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>رشق مشاهدات تيك توك</title>
-<link rel="stylesheet" href="https://kit.fontawesome.com/a076d05399.js">
-<style>
-:root {
-  --bg-color: #0f1724;
-  --text-color: #e6eef8;
-  --btn-color: #e50914;
-  --btn-hover: #ff1e00;
-  --card-bg: #1e293b;
-}
+  <meta charset="UTF-8">
+  <title>رشق مشاهدات تيك توك</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600&display=swap');
 
-body {
-  margin:0;
-  padding:0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg-color);
-  color: var(--text-color);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  transition: background 0.3s, color 0.3s;
-}
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: radial-gradient(circle at center, #121212, #000);
+      color: #fff;
+      text-align: center;
+      padding: 70px 20px;
+      min-height: 100vh;
+    }
 
-/* البطاقة */
-.card {
-  background: var(--card-bg);
-  padding: 30px 25px;
-  border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-  width: 360px;
-  text-align: center;
-  animation: fadeIn 0.5s ease;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
+    h1 {
+      color: #ff2e2e;
+      font-size: 2.3em;
+      letter-spacing: 1px;
+      margin-bottom: 25px;
+      text-shadow: 0 0 10px rgba(255, 46, 46, 0.7);
+    }
 
-.card:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 12px 35px rgba(0,0,0,0.8);
-}
+    form {
+      background: rgba(25, 25, 25, 0.9);
+      padding: 35px;
+      border-radius: 20px;
+      display: inline-block;
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.25);
+      width: 330px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 0, 0, 0.15);
+    }
 
-@keyframes fadeIn {
-  from {opacity:0; transform: translateY(-20px);}
-  to {opacity:1; transform: translateY(0);}
-}
+    input {
+      display: block;
+      width: 90%;
+      margin: 15px auto;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ff2e2e;
+      background: #111;
+      color: #fff;
+      font-size: 16px;
+      transition: 0.3s;
+    }
 
-h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
-}
+    input:focus {
+      outline: none;
+      border-color: #ff4d4d;
+      box-shadow: 0 0 8px rgba(255, 46, 46, 0.5);
+    }
 
-input[type="text"] {
-  width: 100%;
-  padding: 14px;
-  border-radius: 8px;
-  border: none;
-  margin-bottom: 20px;
-  font-size: 15px;
-  background: #0b1220;
-  color: #e6eef8;
-  transition: box-shadow 0.3s, transform 0.2s;
-}
+    button {
+      background: #ff2e2e;
+      color: #fff;
+      font-weight: bold;
+      font-size: 17px;
+      border: none;
+      padding: 12px 0;
+      width: 95%;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 15px;
+      box-shadow: 0 0 15px rgba(255, 46, 46, 0.4);
+      transition: all 0.3s ease-in-out;
+    }
 
-input[type="text"]:focus {
-  outline: none;
-  box-shadow: 0 0 12px #d90429;
-  transform: scale(1.02);
-}
+    button:hover {
+      background: #ff0000;
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+    }
 
-input::placeholder { color: #888; }
+    p {
+      color: #aaa;
+      margin-top: 20px;
+      font-size: 14px;
+    }
 
-button {
-  background: var(--btn-color);
-  color: #fff;
-  border: none;
-  padding: 12px 25px;
-  margin: 10px auto;
-  display: block;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 15px;
-  transition: all 0.2s ease-in-out, box-shadow 0.3s;
-}
+    footer {
+      margin-top: 40px;
+      color: #444;
+      font-size: 13px;
+    }
 
-button:hover {
-  background: var(--btn-hover);
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(255,0,0,0.6);
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-#themeBtn {
-  background: #64748b;
-}
-
-#status {
-  margin-top: 15px;
-  font-size: 14px;
-  padding: 10px;
-  border-radius: 8px;
-  display: none;
-}
-
-#status.success {
-  background: rgba(34, 197, 94, 0.2);
-  color: #4ade80;
-  display: block;
-}
-
-#status.error {
-  background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
-  display: block;
-}
-
-</style>
+  </style>
 </head>
 <body>
+  <h1>🔥 رشق مشاهدات تيك توك 🔥</h1>
 
-<div class="card">
-  <h2>رشق مشاهدات تيك توك</h2>
-  <input type="text" id="discord" placeholder="معرف الديسكورد" pattern="[0-9]{17,19}" required>
-  <input type="text" id="videoLink" placeholder="ضع رابط الفيديو هنا" required>
-  <button id="rashqBtn">إرسال الطلب</button>
-  <button id="homeBtn">العودة للصفحة الرئيسية</button>
-  <button id="themeBtn">وضع ليلي / نهاري</button>
-  <p id="status"></p>
-</div>
+  <form id="rshqForm">
+    <input type="text" id="discord_user" placeholder="👤 اسمك في ديسكورد" required>
+    <input type="url" id="tiktok_link" placeholder="🎬 رابط فيديو تيك توك" required>
+    <button type="submit">🚀 إرسال الطلب</button>
+  </form>
 
-<script>
-const rashqBtn = document.getElementById('rashqBtn');
-const videoLink = document.getElementById('videoLink');
-const discordInput = document.getElementById('discord');
-const homeBtn = document.getElementById('homeBtn');
-const themeBtn = document.getElementById('themeBtn');
-const status = document.getElementById('status');
+  <p>سيتم فتح تطبيق البريد تلقائيًا لإرسال الطلب 📩</p>
 
-const webhookURL = 'https://discord.com/api/webhooks/1429173843494178856/CU1t2MZS0QGyZQT7FG-DGgjrOvRKijsCustfv-i0aEghedOZ44U_DTK-owxj3SkhQVUw';
+  <footer>© 2025 - جميع الحقوق محفوظة</footer>
 
-// زر الرشق
-rashqBtn.addEventListener('click', async () => {
-  const link = videoLink.value.trim();
-  const discord = discordInput.value.trim();
-
-  if(!discord){
-    alert('ضع معرف الديسكورد أولاً!');
-    return;
-  }
-
-  if(!link){
-    alert('ضع رابط الفيديو أولاً!');
-    return;
-  }
-
-  // تعطيل الزر أثناء الإرسال
-  rashqBtn.disabled = true;
-  rashqBtn.textContent = 'جاري الإرسال...';
-  status.style.display = 'none';
-
-  const content = `العضو: <@${discord}>`;
-
-  const payload = {
-    content: content,
-    embeds: [{
-      title: ' طلب رشق مشاهدات تيك توك',
-      color: 16711680, // اللون الأحمر
-      fields: [
-        {
-          name: ' معرف الديسكورد',
-          value: discord,
-          inline: false
-        },
-        {
-          name: ' رابط الفيديو',
-          value: link,
-          inline: false
-        }
-      ],
-      timestamp: new Date().toISOString(),
-      footer: {
-        text: 'DRAGON FREE TikTok Views'
-      }
-    }]
-  };
-
-  try {
-    // إرسال الرسالة الأولى (الـ Embed)
-    const response1 = await fetch(webhookURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload)
+  <script>
+    document.getElementById("rshqForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      
+      const discordUser = document.getElementById("discord_user").value;
+      const tiktokLink = document.getElementById("tiktok_link").value;
+      
+      const email = "ahmedhrbz52@gmail.com"; // غيّرها لإيميلك
+      const subject = encodeURIComponent("طلب رشق جديد من " + discordUser);
+      const body = encodeURIComponent("👤 المستخدم: " + discordUser + "\n🎬 رابط الفيديو: " + tiktokLink);
+      
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     });
-
-    if (!response1.ok) {
-      throw new Error('فشل الإرسال');
-    }
-
-    // الانتظار قليلاً قبل إرسال الرسالة الثانية
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    // إرسال الرسالة الثانية (منشن الرتبة)
-    const response2 = await fetch(webhookURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        content: '<@&1378647724039344149>'
-      })
-    });
-
-    if (response2.ok) {
-      status.textContent = '✅ تم إرسال طلبك بنجاح! سيتم الرد عليك قريباً.';
-      status.className = 'success';
-      // مسح الحقول
-      discordInput.value = '';
-      videoLink.value = '';
-    } else {
-      throw new Error('فشل الإرسال');
-    }
-  } catch (error) {
-    status.textContent = '❌ حدث خطأ أثناء الإرسال. حاول مرة أخرى.';
-    status.className = 'error';
-  } finally {
-    rashqBtn.disabled = false;
-    rashqBtn.textContent = 'إرسال الطلب';
-  }
-});
-
-// زر العودة
-homeBtn.addEventListener('click', () => {
-  window.location.href = "index.html";
-});
-
-// زر الوضع الليلي / النهاري
-themeBtn.addEventListener('click', () => {
-  document.body.classList.toggle('light');
-  if(document.body.classList.contains('light')){
-    document.body.style.background = '#f8fafc';
-    document.body.style.color = '#0f1724';
-  } else {
-    document.body.style.background = '#0f1724';
-    document.body.style.color = '#e6eef8';
-  }
-});
-</script>
-
+  </script>
 </body>
 </html>
